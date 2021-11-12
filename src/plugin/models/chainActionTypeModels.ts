@@ -1,0 +1,16 @@
+export enum EosChainActionType {
+  CreateEscrowCreate = 'CreateEscrowCreate',
+  CreateEscrowDefine = 'CreateEscrowDefine',
+  CreateEscrowInit = 'CreateEscrowInit',
+  CreateEscrowReclaim = 'CreateEscrowReclaim',
+  CreateEscrowTransfer = 'CreateEscrowTransfer',
+  CreateEscrowWhitelist = 'CreateEscrowWhitelist',
+  EosTokenApprove = 'EosTokenApprove',
+  EosTokenCreate = 'EosTokenCreate',
+  EosTokenIssue = 'EosTokenIssue',
+  EosTokenRetire = 'EosTokenRetire',
+  EosTokenTransfer = 'EosTokenTransfer',
+  EosTokenTransferFrom = 'EosTokenTransferFrom',
+  OreCreateAccount = 'OreCreateAccount',
+  OreUpsertRight = 'OreUpsertRight',
+}
