@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@open-rights-exchange/chainjs": ["../chain-js/src"]
+    }
+  },
+  "references": 
+  [
+      {"path": "../chain-js"}
+  ]
+}
