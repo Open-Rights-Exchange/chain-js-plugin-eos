@@ -1,4 +1,4 @@
-//import { ModelsCryptoAes, PublicKeyBrand, PrivateKeyBrand, SignatureBrand } from '../../../models'
+// import { ModelsCryptoAes, PublicKeyBrand, PrivateKeyBrand, SignatureBrand } from '../../../models'
 import { Models } from '@open-rights-exchange/chainjs'
 
 /** a public key string - formatted correctly for EOS */

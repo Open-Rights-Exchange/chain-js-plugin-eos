@@ -5,10 +5,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
-//import { Chain, ChainFactory, ChainType } from '../../../index'
+// import { Chain, ChainFactory, ChainType } from '../../../index'
 import ChainEosV2 from '../ChainEosV2'
 import { RpcError } from 'eosjs'
-//import { ChainActionType } from '../../../models'
+// import { ChainActionType } from '../../../models'
 import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chainjs'
 import { toEosEntityName, toEosSymbol } from '../helpers'
 

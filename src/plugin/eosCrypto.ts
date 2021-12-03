@@ -1,17 +1,23 @@
 /* eslint-disable new-cap */
 import * as eosEcc from 'eosjs-ecc'
 import base58 from 'bs58'
-//import { AesCrypto, Asymmetric } from '../../crypto'
+// import { AesCrypto, Asymmetric } from '../../crypto'
+import {
+  Helpers,
+  Models,
+  Crypto,
+  CryptoHelpers,
+  CryptoAsymmetricModels,
+  CryptoAsymmetricHelpers,
+} from '@open-rights-exchange/chainjs'
 import { TRANSACTION_ENCODING } from './eosConstants'
 import { EosAccountKeys, EosSignature, EosPublicKey, EosPrivateKey, EosKeyPair } from './models'
-//import { Signature } from '../../models'
-//import { isHexString, removeEmptyValuesInJsonObject } from '../../helpers'
+// import { Signature } from '../../models'
+// import { isHexString, removeEmptyValuesInJsonObject } from '../../helpers'
 import { toEosPublicKey } from './helpers'
-//import { ensureEncryptedValueIsObject } from '../../crypto/genericCryptoHelpers'
-//import * as AsymmetricHelpers from '../../crypto/asymmetricHelpers'
-//import { AsymmetricScheme } from '../../crypto/asymmetricModels'
-
-import { Helpers, Models, Crypto, CryptoHelpers, CryptoAsymmetricModels, CryptoAsymmetricHelpers} from '@open-rights-exchange/chainjs'
+// import { ensureEncryptedValueIsObject } from '../../crypto/genericCryptoHelpers'
+// import * as AsymmetricHelpers from '../../crypto/asymmetricHelpers'
+// import { AsymmetricScheme } from '../../crypto/asymmetricModels'
 
 const { Keygen } = require('eosjs-keygen')
 
@@ -76,7 +82,9 @@ export async function decryptWithPrivateKey(
 ): Promise<string> {
   const useOptions = { ...options, curveType: Crypto.Asymmetric.EciesCurveType.Secp256k1 }
   const privateKeyHex = eosEcc.PrivateKey(privateKey).toBuffer().toString('hex')
-  const encryptedObject = CryptoHelpers.ensureEncryptedValueIsObject(encrypted) as Crypto.Asymmetric.AsymmetricEncryptedData
+  const encryptedObject = CryptoHelpers.ensureEncryptedValueIsObject(
+    encrypted,
+  ) as Crypto.Asymmetric.AsymmetricEncryptedData
   return Crypto.Asymmetric.decryptWithPrivateKey(encryptedObject, privateKeyHex, useOptions)
 }
 
@@ -105,7 +113,7 @@ export async function decryptWithPrivateKeys(
   privateKeys: EosPublicKey[],
   options?: any,
 ): Promise<string> {
-  return  CryptoAsymmetricHelpers.decryptWithPrivateKeys(decryptWithPrivateKey, encrypted, privateKeys, options)
+  return CryptoAsymmetricHelpers.decryptWithPrivateKeys(decryptWithPrivateKey, encrypted, privateKeys, options)
 }
 
 /** Signs data with private key */
@@ -123,7 +131,7 @@ export async function generateKeyPair(): Promise<EosKeyPair> {
 
 /** Returns public key from signature */
 export function getPublicKeyFromSignature(
-  signature:  Models.Signature | EosSignature | string | Buffer,
+  signature: Models.Signature | EosSignature | string | Buffer,
   data: string | Buffer,
   encoding: string = TRANSACTION_ENCODING,
 ): EosPublicKey {

@@ -14,10 +14,20 @@ import {
   TransactionStatus,
 } from '../../models'
 */
+import {
+  Helpers,
+  Models,
+  Crypto,
+  Chain,
+  ChainType,
+  ChainError,
+  ChainJsPlugin,
+  ChainJsPluginOptions,
+  throwNewError,
+} from '@open-rights-exchange/chainjs'
 import { NATIVE_CHAIN_TOKEN_ADDRESS, NATIVE_CHAIN_TOKEN_PRECISION, NATIVE_CHAIN_TOKEN_SYMBOL } from './eosConstants'
-//import { Chain } from '../../interfaces'
-//import { ChainError, throwNewError } from '../../errors'
-import { Helpers, Models, Crypto, Chain, ChainType, ChainError, ChainJsPlugin, ChainJsPluginOptions, throwNewError } from '@open-rights-exchange/chainjs'
+// import { Chain } from '../../interfaces'
+// import { ChainError, throwNewError } from '../../errors'
 import * as eoscrypto from './eosCrypto'
 import { EosChainState } from './eosChainState'
 import { mapChainError } from './eosErrors'
@@ -40,7 +50,7 @@ import {
   toEosDate,
   toEosSymbol,
 } from './helpers'
-//import { assertPluginTypeNotAlreadyInstalled, initializePlugin } from '../../helpers'
+// import { assertPluginTypeNotAlreadyInstalled, initializePlugin } from '../../helpers'
 import {
   EosActionStruct,
   EosChainSettings,
@@ -52,8 +62,8 @@ import {
   EosSymbol,
   EosTransactionHistory,
 } from './models'
-//import { Asymmetric } from '../../crypto'
-//import { ChainJsPlugin, ChainJsPluginOptions } from '../../interfaces/plugin'
+// import { Asymmetric } from '../../crypto'
+// import { ChainJsPlugin, ChainJsPluginOptions } from '../../interfaces/plugin'
 
 /** Provides support for the EOS blockchain
  *  Provides EOS-specific implementations of the Chain interface
@@ -86,7 +96,7 @@ class Plugin implements Chain {
   }
 
   /** Retrieve lastest chain info including head block number and time */
-  public get chainInfo():Models.ChainInfo {
+  public get chainInfo(): Models.ChainInfo {
     this.assertIsConnected()
     return this._chainState.chainInfo
   }
@@ -364,8 +374,10 @@ class Plugin implements Chain {
     return ChainType.EosV2
   }
 
-  public static chainType : Models.ChainType = ChainType.EosV2;
-  public static chainType2 : Models.ChainType = ChainType.EosV2;
+  public static chainType: Models.ChainType = ChainType.EosV2
+
+  public static chainType2: Models.ChainType = ChainType.EosV2
+
   /** Returns chain plug-in name */
   // eslint-disable-next-line class-methods-use-this
   public get description(): string {
@@ -411,4 +423,4 @@ class Plugin implements Chain {
   }
 }
 
-export default Plugin 
+export default Plugin

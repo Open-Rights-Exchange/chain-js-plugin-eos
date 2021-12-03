@@ -1,4 +1,5 @@
 import { hexToUint8Array } from 'eosjs/dist/eosjs-serialize'
+import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chainjs'
 import { EosAccount } from './eosAccount'
 import { EosChainState } from './eosChainState'
 import { getPublicKeyFromSignature, sign as cryptoSign } from './eosCrypto'
@@ -25,10 +26,9 @@ import {
   notSupported,
 } from '../../helpers'
 */
-//import { throwAndLogError, throwNewError } from '../../errors'
-//import { ChainSettingsCommunicationSettings, ConfirmType } from '../../models'
-//import { Transaction } from '../../interfaces'
-import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chainjs'
+// import { throwAndLogError, throwNewError } from '../../errors'
+// import { ChainSettingsCommunicationSettings, ConfirmType } from '../../models'
+// import { Transaction } from '../../interfaces'
 
 export type PublicKeyMapCache = {
   accountName: EosEntityName
@@ -103,7 +103,9 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** Returns a parent transaction - not used for Eos */
   get parentTransaction() {
-    return Helpers.notSupported('Eos doesnt use a parent transaction - check requiresParentTransaction() before calling this')
+    return Helpers.notSupported(
+      'Eos doesnt use a parent transaction - check requiresParentTransaction() before calling this',
+    )
   }
 
   /** Whether parent transaction has been set yet - Not used for Eos */

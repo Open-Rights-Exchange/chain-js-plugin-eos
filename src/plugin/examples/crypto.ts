@@ -6,8 +6,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
-//import { Chain, ChainFactory, ChainType } from '../../../index'
-//import { Asymmetric, AesCrypto } from '../../../crypto'
+// import { Chain, ChainFactory, ChainType } from '../../../index'
+// import { Asymmetric, AesCrypto } from '../../../crypto'
 import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chainjs'
 import { toEosPrivateKey, toEosPublicKey } from '../helpers'
 import { eosPrivateKeyToEccPrivateKey, eosPublicKeyToEccPublicKey } from '../eosCrypto'

@@ -1,7 +1,7 @@
-//import { ChainActionType } from '../../../../../models'
+// import { ChainActionType } from '../../../../../models'
 import { Models, Helpers } from '@open-rights-exchange/chainjs'
 
-//import { getFirstValueIfOnlyOneExists } from '../../../../../helpers'
+// import { getFirstValueIfOnlyOneExists } from '../../../../../helpers'
 import {
   EosEntityName,
   EosPublicKey,

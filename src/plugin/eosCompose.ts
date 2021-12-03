@@ -1,6 +1,7 @@
-//import { ChainActionType } from '../../models'
+// import { ChainActionType } from '../../models'
+import { Helpers, Models } from '@open-rights-exchange/chainjs'
 import { EosChainActionType, EosActionStruct } from './models'
-//import { notSupported } from '../../helpers'
+// import { notSupported } from '../../helpers'
 
 // Standard actions
 import { composeAction as TokenApproveTemplate } from './templates/chainActions/standard/token_approve'
@@ -27,8 +28,6 @@ import { composeAction as EosTokenTransferTemplate } from './templates/chainActi
 import { composeAction as EosTokenTransferFromTemplate } from './templates/chainActions/chainSpecific/eosToken_transferFrom'
 import { composeAction as OreCreateAccountTemplate } from './templates/chainActions/chainSpecific/ore_createAccount'
 import { composeAction as OreUpsertRightTemplate } from './templates/chainActions/chainSpecific/ore_upsertRight'
-
-import { Helpers, Models, Crypto, Chain, ChainType, ChainError, ChainJsPlugin, ChainJsPluginOptions, Interfaces, Errors} from '@open-rights-exchange/chainjs'
 
 // map a key name to a function that returns an object
 const ComposeAction: { [key: string]: (args: any) => any } = {

@@ -1,4 +1,4 @@
-//import { isNullOrEmpty } from '../../../helpers'
+// import { isNullOrEmpty } from '../../../helpers'
 import { Helpers } from '@open-rights-exchange/chainjs'
 
 import { EosActionAuthorizationStruct } from '../models'

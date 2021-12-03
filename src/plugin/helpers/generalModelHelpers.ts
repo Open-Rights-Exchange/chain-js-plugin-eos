@@ -1,7 +1,7 @@
 import moment from 'moment'
-import { EosDate, EosAsset, EosEntityName, EosSymbol } from '../models/generalModels'
-//import { isNullOrEmpty } from '../../../helpers'
 import { Helpers } from '@open-rights-exchange/chainjs'
+import { EosDate, EosAsset, EosEntityName, EosSymbol } from '../models/generalModels'
+// import { isNullOrEmpty } from '../../../helpers'
 
 /**  Expects a format of time_point/time_point_sec
  * Example here: https://eosio.stackexchange.com/questions/4830/can-we-store-date-on-eosio-table/4831

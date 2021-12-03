@@ -1,3 +1,4 @@
+import { Models } from '@open-rights-exchange/chainjs'
 import { EosPublicKey, EosAccountKeys, EosKeyPair } from './cryptoModels'
 /*
 import {
@@ -9,7 +10,6 @@ import {
   ModelsCryptoAes,
 } from '../../../models'
 */
-import { Models } from '@open-rights-exchange/chainjs'
 
 // using Enum 'brands' to force a string type to have a particular format
 // See - https://spin.atomicobject.com/2017/06/19/strongly-typed-date-string-typescript/

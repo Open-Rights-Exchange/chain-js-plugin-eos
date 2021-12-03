@@ -2,28 +2,8 @@ import { Api, JsonRpc, RpcInterfaces } from 'eosjs'
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig' // development only
 import nodeFetch, { Headers as NodeFetchHeaders } from 'node-fetch' // node only; not needed in browsers
 import { TextEncoder, TextDecoder } from 'util' // for node only; native TextEncoder/Decoder
-/*
-import {
-  ChainError,
-  rejectAwaitTransaction,
-  resolveAwaitTransaction,
-  throwAndLogError,
-  throwNewError,
-} from '../../errors'
-*/
-/*
-import {
-  ChainInfo,
-  ConfirmType,
-  ChainErrorType,
-  ChainErrorDetailCode,
-  ChainSettingsCommunicationSettings,
-  TransactionStatus,
-} from '../../models'
-*/
 
-//import { fetchWrapper, trimTrailingChars, isAString, isNullOrEmpty, arrayToObject } from '../../helpers'
-
+import { Helpers, Models, ChainError, Interfaces, Errors } from '@open-rights-exchange/chainjs'
 import {
   EosSignature,
   EosEntityName,
@@ -35,9 +15,8 @@ import {
   EosTransactionHistory,
   EosTransactionHistoryStatus,
 } from './models'
-//import { ChainState } from '../../interfaces/chainState'
+// import { ChainState } from '../../interfaces/chainState'
 
-import { Helpers, Models, ChainError, Interfaces, Errors} from '@open-rights-exchange/chainjs'
 import { mapChainError } from './eosErrors'
 import {
   CHAIN_BLOCK_FREQUENCY,

@@ -1,3 +1,4 @@
+import { Models, throwNewError, Interfaces } from '@open-rights-exchange/chainjs'
 import { EosChainState } from './eosChainState'
 import {
   EosEntityName,
@@ -13,14 +14,12 @@ import {
   UnlinkPermissionsParams,
   EosPermission,
 } from './models'
-//import { Account } from '../../interfaces'
-//import { throwNewError } from '../../errors'
+// import { Account } from '../../interfaces'
+// import { throwNewError } from '../../errors'
 import { mapChainError } from './eosErrors'
 import { toEosEntityName } from './helpers'
 import { PermissionsHelper } from './eosPermissionsHelper'
-//import { ChainErrorType } from '../../models'
-
-import { Models, throwNewError, Interfaces } from '@open-rights-exchange/chainjs'
+// import { ChainErrorType } from '../../models'
 
 // OREJS Ported functions
 //   hasPermission() {} // checkIfAccountHasPermission

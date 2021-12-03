@@ -1,3 +1,4 @@
+import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chainjs'
 import { EosChainState } from './eosChainState'
 import {
   EosCreateAccountOptions,
@@ -11,8 +12,8 @@ import {
   EosTransactionOptions,
 } from './models/index'
 import { EosAccount } from './eosAccount'
-//import { throwNewError } from '../../errors'
-//import { CreateAccount } from '../../interfaces'
+// import { throwNewError } from '../../errors'
+// import { CreateAccount } from '../../interfaces'
 import { EosTransaction } from './eosTransaction'
 import {
   isValidEosPublicKey,
@@ -30,11 +31,10 @@ import {
   DEFAULT_ORE_ACCOUNT_TIER,
 } from './eosConstants'
 import { generateNewAccountKeysAndEncryptPrivateKeys } from './eosCrypto'
-//import { isNullOrEmpty, isANumber } from '../../helpers'
+// import { isNullOrEmpty, isANumber } from '../../helpers'
 import { composeAction, composeActions } from './eosCompose'
 import { PermissionsHelper } from './eosPermissionsHelper'
-//import { ChainActionType, ChainErrorType } from '../../models'
-import { Helpers, Models, Interfaces, Errors} from '@open-rights-exchange/chainjs'
+// import { ChainActionType, ChainErrorType } from '../../models'
 
 /** Helper class to compose a transction for creating a new chain account
  *  Handles native, virtual, and createEscrow accounts

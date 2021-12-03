@@ -5,9 +5,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
 import { RpcError } from 'eosjs'
-//import { Chain, ChainFactory, ChainType } from '../../../index'
-//import { Asymmetric, AesCrypto } from '../../../crypto'
-//import { ChainActionType, ConfirmType } from '../../../models'
+// import { Chain, ChainFactory, ChainType } from '../../../index'
+// import { Asymmetric, AesCrypto } from '../../../crypto'
+// import { ChainActionType, ConfirmType } from '../../../models'
 import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chainjs'
 import { toEosEntityName, toEosPrivateKey, toEosPublicKey, toEosAsset, toEosSymbol } from '../helpers'
 import { EosAccount } from '../eosAccount'

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-restricted-syntax */
+import { Helpers, Models, Errors } from '@open-rights-exchange/chainjs'
 import {
   EosEntityName,
   EosPermissionStruct,
@@ -17,12 +18,11 @@ import {
 } from './models'
 import { EosChainState } from './eosChainState'
 import { composeAction } from './eosCompose'
-//import { throwNewError } from '../../errors'
+// import { throwNewError } from '../../errors'
 import { generateKeyPairAndEncryptPrivateKeys } from './eosCrypto'
-//import { isNullOrEmpty } from '../../helpers'
+// import { isNullOrEmpty } from '../../helpers'
 import { toEosEntityName } from './helpers'
-//import { ChainActionType } from '../../models'
-import { Helpers, Models, Crypto, Chain, ChainType, ChainError, ChainJsPlugin, ChainJsPluginOptions, Interfaces, Errors, CryptoHelpers, CryptoAsymmetricModels, CryptoAsymmetricHelpers} from '@open-rights-exchange/chainjs'
+// import { ChainActionType } from '../../models'
 
 export class PermissionsHelper {
   private _chainState: EosChainState
@@ -80,7 +80,8 @@ export class PermissionsHelper {
     // TODO: if appendKeyToExistingPermission = true, add the new key to the existing permission's require_auth array
     // collect an array of new permission objects
     usePermissionsToAdd.forEach(p => {
-      const parent = p.name === toEosEntityName('owner') && Helpers.isNullOrEmpty(p.parent) ? '' : toEosEntityName(p.parent)
+      const parent =
+        p.name === toEosEntityName('owner') && Helpers.isNullOrEmpty(p.parent) ? '' : toEosEntityName(p.parent)
       const permissionToAdd = this.composePermission(
         [p.publicKey],
         toEosEntityName(p.name),

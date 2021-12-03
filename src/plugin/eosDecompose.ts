@@ -1,4 +1,5 @@
 // Standard actions
+import { Helpers } from '@open-rights-exchange/chainjs'
 import { decomposeAction as TokenApproveTemplate } from './templates/chainActions/standard/token_approve'
 import { decomposeAction as TokenTransferTemplate } from './templates/chainActions/standard/token_transfer'
 import { decomposeAction as TokenTransferFromTemplate } from './templates/chainActions/standard/token_transferFrom'
@@ -25,8 +26,7 @@ import { decomposeAction as EosTokenTransferFromTemplate } from './templates/cha
 import { decomposeAction as OreCreateAccountTemplate } from './templates/chainActions/chainSpecific/ore_createAccount'
 import { decomposeAction as OreUpsertRightTemplate } from './templates/chainActions/chainSpecific/ore_upsertRight'
 import { EosActionStruct, EosDecomposeReturn } from './models'
-//import { isNullOrEmpty } from '../../helpers'
-import { Helpers } from '@open-rights-exchange/chainjs'
+// import { isNullOrEmpty } from '../../helpers'
 
 // map a key name to a function that returns an object
 const DecomposeAction: { [key: string]: (args: any) => any } = {
