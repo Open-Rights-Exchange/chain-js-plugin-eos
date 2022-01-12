@@ -9,7 +9,7 @@
 import ChainEosV2 from '../ChainEosV2'
 import { RpcError } from 'eosjs'
 // import { ChainActionType } from '../../../models'
-import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chainjs'
+import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chain-js'
 import { toEosEntityName, toEosSymbol } from '../helpers'
 
 require('dotenv').config()

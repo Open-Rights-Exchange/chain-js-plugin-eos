@@ -3,7 +3,7 @@ import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig' // development only
 import nodeFetch, { Headers as NodeFetchHeaders } from 'node-fetch' // node only; not needed in browsers
 import { TextEncoder, TextDecoder } from 'util' // for node only; native TextEncoder/Decoder
 
-import { Helpers, Models, ChainError, Interfaces, Errors } from '@open-rights-exchange/chainjs'
+import { Helpers, Models, ChainError, Interfaces, Errors } from '@open-rights-exchange/chain-js'
 import {
   EosSignature,
   EosEntityName,

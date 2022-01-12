@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { Helpers } from '@open-rights-exchange/chainjs'
+import { Helpers } from '@open-rights-exchange/chain-js'
 import { EosDate, EosAsset, EosEntityName, EosSymbol } from '../models/generalModels'
 // import { isNullOrEmpty } from '../../../helpers'
 

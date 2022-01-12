@@ -9,7 +9,7 @@ import {
   CryptoHelpers,
   CryptoAsymmetricModels,
   CryptoAsymmetricHelpers,
-} from '@open-rights-exchange/chainjs'
+} from '@open-rights-exchange/chain-js'
 import { TRANSACTION_ENCODING } from './eosConstants'
 import { EosAccountKeys, EosSignature, EosPublicKey, EosPrivateKey, EosKeyPair } from './models'
 // import { Signature } from '../../models'

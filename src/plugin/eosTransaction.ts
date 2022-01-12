@@ -1,5 +1,5 @@
 import { hexToUint8Array } from 'eosjs/dist/eosjs-serialize'
-import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chainjs'
+import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chain-js'
 import { EosAccount } from './eosAccount'
 import { EosChainState } from './eosChainState'
 import { getPublicKeyFromSignature, sign as cryptoSign } from './eosCrypto'

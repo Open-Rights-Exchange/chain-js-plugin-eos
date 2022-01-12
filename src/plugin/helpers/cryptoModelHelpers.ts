@@ -1,5 +1,5 @@
 import * as ecc from 'eosjs-ecc'
-import { Helpers } from '@open-rights-exchange/chainjs'
+import { Helpers } from '@open-rights-exchange/chain-js'
 import { EosPrivateKey, EosPublicKey, EosSignature } from '../models'
 // import { isNullOrEmpty } from '../../../helpers'
 

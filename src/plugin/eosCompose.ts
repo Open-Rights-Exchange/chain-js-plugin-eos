@@ -1,5 +1,5 @@
 // import { ChainActionType } from '../../models'
-import { Helpers, Models } from '@open-rights-exchange/chainjs'
+import { Helpers, Models } from '@open-rights-exchange/chain-js'
 import { EosChainActionType, EosActionStruct } from './models'
 // import { notSupported } from '../../helpers'
 

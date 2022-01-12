@@ -1,4 +1,4 @@
-import { Models } from '@open-rights-exchange/chainjs'
+import { Models } from '@open-rights-exchange/chain-js'
 import { EosEntityName, EosActionStruct, EosDecomposeReturn } from '../../../models'
 // import { ChainActionType } from '../../../../../models'
 import { toEosEntityName, getFirstAuthorizationIfOnlyOneExists, toEosEntityNameOrNull } from '../../../helpers'

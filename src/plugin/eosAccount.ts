@@ -1,4 +1,4 @@
-import { Models, throwNewError, Interfaces } from '@open-rights-exchange/chainjs'
+import { Models, throwNewError, Interfaces } from '@open-rights-exchange/chain-js'
 import { EosChainState } from './eosChainState'
 import {
   EosEntityName,

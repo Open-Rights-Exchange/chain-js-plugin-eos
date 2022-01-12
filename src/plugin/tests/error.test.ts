@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 // How to use fetch mocks - https://www.npmjs.com/package/jest-fetch-mock
 import { JsonRpc, RpcError } from 'eosjs'
-import { Models } from '@open-rights-exchange/chainjs'
+import { Models } from '@open-rights-exchange/chain-js'
 import { mapChainError } from '../eosErrors'
 // import { ChainErrorType } from '../../../models'
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-restricted-syntax */
-import { Helpers, Models, Errors } from '@open-rights-exchange/chainjs'
+import { Helpers, Models, Errors } from '@open-rights-exchange/chain-js'
 import {
   EosEntityName,
   EosPermissionStruct,

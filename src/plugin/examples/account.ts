@@ -5,7 +5,7 @@
 // import { ConfirmType } from '../../../models'
 // import { Chain, ChainFactory, ChainType, CreateAccount, Crypto, Models } from '../../../index'
 // import { AesCrypto } from '../../../crypto'
-import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chainjs'
+import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chain-js'
 import {
   EosPrivateKey,
   EosNewAccountType,

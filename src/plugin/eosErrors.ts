@@ -3,7 +3,7 @@ import { RpcError } from 'eosjs'
 // import { ChainError } from '../../errors'
 // import { stringifySafe } from '../../helpers'
 // import { ChainErrorType } from '../../models'
-import { Helpers, Models, ChainError } from '@open-rights-exchange/chainjs'
+import { Helpers, Models, ChainError } from '@open-rights-exchange/chain-js'
 
 /**  subset of errors from EOS chain - https://github.com/EOSIO/eos/blob/master/libraries/chain/include/eosio/chain/exceptions.hpp
  * IMPORTANT: These are in order of importance

@@ -1,4 +1,4 @@
-import { Models } from '@open-rights-exchange/chainjs'
+import { Models } from '@open-rights-exchange/chain-js'
 import { EosPublicKey, EosAccountKeys, EosKeyPair } from './cryptoModels'
 /*
 import {

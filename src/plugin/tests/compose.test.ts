@@ -1,5 +1,5 @@
 // How to use fetch mocks - https://www.npmjs.com/package/jest-fetch-mock
-import { Models } from '@open-rights-exchange/chainjs'
+import { Models } from '@open-rights-exchange/chain-js'
 import { composeAction } from '../eosCompose'
 // import { ChainActionType } from '../../../models'
 import {

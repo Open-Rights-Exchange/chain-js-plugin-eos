@@ -1,6 +1,6 @@
 {
   "name": "@open-rights-exchange/chain-js-plugin-eos",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/open-rights-exchange/chainjs-plugin-eos#readme",
   "dependencies": {
+    "@open-rights-exchange/chain-js": "^4.0.0",
     "bs58": "^4.0.1",
     "dotenv": "^8.0.0",
     "eosjs": "^20.0.0",

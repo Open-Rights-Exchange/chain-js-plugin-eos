@@ -1,4 +1,4 @@
-import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chainjs'
+import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chain-js'
 import { EosChainState } from './eosChainState'
 import {
   EosCreateAccountOptions,

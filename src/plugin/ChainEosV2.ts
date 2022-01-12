@@ -24,7 +24,7 @@ import {
   ChainJsPlugin,
   ChainJsPluginOptions,
   throwNewError,
-} from '@open-rights-exchange/chainjs'
+} from '@open-rights-exchange/chain-js'
 import { NATIVE_CHAIN_TOKEN_ADDRESS, NATIVE_CHAIN_TOKEN_PRECISION, NATIVE_CHAIN_TOKEN_SYMBOL } from './eosConstants'
 // import { Chain } from '../../interfaces'
 // import { ChainError, throwNewError } from '../../errors'

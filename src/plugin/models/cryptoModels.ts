@@ -1,5 +1,5 @@
 // import { ModelsCryptoAes, PublicKeyBrand, PrivateKeyBrand, SignatureBrand } from '../../../models'
-import { Models } from '@open-rights-exchange/chainjs'
+import { Models } from '@open-rights-exchange/chain-js'
 
 /** a public key string - formatted correctly for EOS */
 export type EosPublicKey = string & Models.PublicKeyBrand
