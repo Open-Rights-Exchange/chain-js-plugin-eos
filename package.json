@@ -14,13 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TeamAikon/chainjs-plugin-eos.git"
+    "url": "git+https://github.com/open-rights-exchange/chainjs-plugin-eos.git"
   },
   "author": "AIKON",
   "bugs": {
-    "url": "https://github.com/TeamAikon/chainjs-plugin-eos/issues"
+    "url": "https://github.com/open-rights-exchange/chainjs-plugin-eos/issues"
   },
-  "homepage": "https://github.com/TeamAikon/chainjs-plugin-eos#readme",
+  "homepage": "https://github.com/open-rights-exchange/chainjs-plugin-eos#readme",
   "dependencies": {
     "bs58": "^4.0.1",
     "dotenv": "^8.0.0",
