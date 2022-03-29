@@ -1,4 +1,4 @@
-import moment from 'moment'
+// import moment from 'moment'
 import { Helpers } from '@open-rights-exchange/chain-js'
 import { EosDate, EosAsset, EosEntityName, EosSymbol } from '../models/generalModels'
 // import { isNullOrEmpty } from '../../../helpers'
@@ -30,14 +30,31 @@ export function isValidEosEntityName(str: EosEntityName | string): str is EosEnt
   return str.match(/(^[a-z1-5.]{1,11}[a-z1-5]$)|(^[a-z1-5.]{12}[a-j1-5]$)/i) !== null
 }
 
-export function toEosDate(date: string | Date | moment.Moment | EosDate): EosDate {
+// export function toEosDate(date: string | Date | moment.Moment | EosDate): EosDate {
+//   if (typeof date === 'string') {
+//     if (isValidEosDate(date)) {
+//       return date
+//     }
+//     throw new Error(`Invalid date string: ${date}`)
+//   } else {
+//     const dateString = moment(date).format('YYYY-MM-DDTHH:MM:SS.sss')
+//     if (isValidEosDate(dateString)) {
+//       return dateString
+//     }
+//   }
+//   throw new Error(`Invalid toEosDate provided: ${date}`)
+// }
+
+export function toEosDate(date: string | Date | EosDate): EosDate {
   if (typeof date === 'string') {
     if (isValidEosDate(date)) {
       return date
     }
     throw new Error(`Invalid date string: ${date}`)
   } else {
-    const dateString = moment(date).format('YYYY-MM-DDTHH:MM:SS.sss')
+    // const dateString = moment(date).format('YYYY-MM-DDTHH:MM:SS.sss')
+    const dt = new Date(date)
+    const dateString = dt.toISOString()
     if (isValidEosDate(dateString)) {
       return dateString
     }

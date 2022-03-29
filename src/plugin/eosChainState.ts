@@ -132,8 +132,8 @@ export class EosChainState implements Interfaces.ChainState {
         this._api = new Api({
           rpc: this._rpc,
           signatureProvider: this._signatureProvider,
-          textDecoder: new TextDecoder(),
-          textEncoder: new TextEncoder(),
+          // textDecoder: new TextDecoder(), // This was causing problems in the UMD \ Web Browser version and doesn't seem to be needed.
+          // textEncoder: new TextEncoder(), // This was causing problems in the UMD \ Web Browser version and doesn't seem to be needed.
         })
       }
       await this.getChainInfo()
