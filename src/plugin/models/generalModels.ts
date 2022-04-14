@@ -30,6 +30,13 @@ export type EosAuthorization = {
   publicKey?: EosPublicKey
 }
 
+/** A container for account, permission name, and full permission stucture */
+export type EosAuthorizationPerm = {
+  account: EosEntityName
+  permission: EosEntityName
+  requiredAuthorization?: EosRequiredAuthorization
+}
+
 /** Chain configuation for creating a new connection */
 export type EosChainSettings = {
   createEscrowContract?: string
@@ -114,4 +121,10 @@ export type EosRequiredAuthorization = {
     waitSec: number
     weight: number
   }[]
+}
+
+export type PermissionMapCache = {
+  accountName: EosEntityName
+  permissionName: EosEntityName
+  permission: EosRequiredAuthorization
 }
