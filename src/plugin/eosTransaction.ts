@@ -14,6 +14,9 @@ import {
   EosTransactionOptions,
   EosRawTransaction,
   EosSerializedTransaction,
+  EosRequiredAuthorization,
+  EosAuthorizationPerm,
+  PermissionMapCache,
 } from './models'
 /*
 import {
@@ -37,7 +40,7 @@ export type PublicKeyMapCache = {
 }
 
 export class EosTransaction implements Interfaces.Transaction {
-  private _publicKeyMap: PublicKeyMapCache[] = []
+  private _publicKeyMap: PermissionMapCache[] = []
 
   private _cachedAccounts: EosAccount[] = []
 
@@ -58,7 +61,7 @@ export class EosTransaction implements Interfaces.Transaction {
 
   private _signBuffer: Buffer
 
-  private _requiredAuthorizations: EosAuthorization[]
+  private _requiredAuthorizations: EosAuthorizationPerm[]
 
   private _isValidated: boolean
 
@@ -127,9 +130,8 @@ export class EosTransaction implements Interfaces.Transaction {
     return this._sendReceipt
   }
 
-  /** TODO: Implement support for eos multi-sig transactions */
   get supportsMultisigTransaction(): boolean {
-    return false
+    return true
   }
 
   /** Generate the raw transaction body using the actions attached
@@ -228,6 +230,10 @@ export class EosTransaction implements Interfaces.Transaction {
     return this._actions
   }
 
+  private async checkActionsRequireMsig() {
+    this._requiredAuthorizations = await this.fetchAuthorizationsRequired()
+  }
+
   /** Sets the Array of actions */
   public set actions(actions: EosActionStruct[]) {
     this.assertNoSignatures()
@@ -236,6 +242,7 @@ export class EosTransaction implements Interfaces.Transaction {
     }
     this._actions = actions
     this._isValidated = false
+    this.checkActionsRequireMsig()
   }
 
   /** Add one action to the transaction body
@@ -253,6 +260,7 @@ export class EosTransaction implements Interfaces.Transaction {
     }
     this._actions = newActions
     this._isValidated = false
+    this.checkActionsRequireMsig()
   }
 
   /** Wether a value is a well-formed array of tx actions */
@@ -332,12 +340,21 @@ export class EosTransaction implements Interfaces.Transaction {
     return !Helpers.isNullOrEmpty(this.signatures)
   }
 
+  private checkAuthSigned(auth: EosRequiredAuthorization): boolean {
+    const weights: number[] = []
+    auth.keys.forEach(keyObj => weights.push(this.hasSignatureForPublicKey(keyObj.key) ? keyObj.weight : 0))
+    const sum = weights.reduce((partialSum, a) => partialSum + a, 0)
+    return sum >= auth.threshold
+  }
+
   // TODO: Fix this logic - should evaluate the weights of keys in each EOSAuthorization
   // As written, the assumption is that if a public key is in the auth, it is required, but no neccesarily - if the threshold is already met with existing keys
   /** Whether there is an attached signature for every authorization (e.g. account/permission) in all actions */
   public get hasAllRequiredSignatures(): boolean {
     this.assertIsValidated()
-    const hasAllSignatures = this._requiredAuthorizations?.every(auth => this.hasSignatureForPublicKey(auth.publicKey))
+    const hasAllSignatures = this._requiredAuthorizations?.every(auth =>
+      this.checkAuthSigned(auth?.requiredAuthorization),
+    )
     return hasAllSignatures
   }
 
@@ -350,9 +367,9 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** An array of authorizations (e.g. account/permission) that do not have an attached signature
    *  Retuns null if no signatures are missing */
-  public get missingSignatures(): EosAuthorization[] {
+  public get missingSignatures(): EosAuthorizationPerm[] {
     this.assertIsValidated()
-    const missing = this._requiredAuthorizations?.filter(auth => !this.hasSignatureForPublicKey(auth.publicKey))
+    const missing = this._requiredAuthorizations?.filter(auth => !this.checkAuthSigned(auth?.requiredAuthorization))
     return Helpers.isNullOrEmpty(missing) ? null : missing // if no values, return null instead of empty array
   }
 
@@ -366,14 +383,18 @@ export class EosTransaction implements Interfaces.Transaction {
   }
 
   /** Whether there is an attached signature for the publicKey for the authoization (e.g. account/permission)
-   *  May need to call chain (async) to fetch publicKey(s) for authorization(s) */
+   *  May need to call chain (async) to fetch publicKey(s) for authorization(s)
+   * TODO support accounts not just keys */
   public async hasSignatureForAuthorization(authorization: EosAuthorization): Promise<boolean> {
     const { account, permission } = authorization
-    let { publicKey } = authorization
-    if (!authorization.publicKey) {
-      publicKey = await this.getPublicKeyForAuthorization(account, permission)
-    }
-    return this.hasSignatureForPublicKey(publicKey)
+
+    const auth = await this.getPermissionForAuthorization(account, permission)
+    let hasSig = true
+    auth.keys.forEach((keyObj: any) => {
+      if (!this.hasSignatureForPublicKey(keyObj.key)) hasSig = false
+    })
+    // await Promise.all(wait)
+    return hasSig
   }
 
   /** The transaction data needed to create a transaction signature.
@@ -384,9 +405,12 @@ export class EosTransaction implements Interfaces.Transaction {
     return this._signBuffer
   }
 
-  /** TODO: Implement support for eos multi-sig transactions */
   public get isMultisig(): boolean {
-    return false
+    let requiresMoreSigs = false
+    this._requiredAuthorizations?.forEach(auth => {
+      if (auth.requiredAuthorization.keys.length > 1) requiresMoreSigs = true
+    })
+    return requiresMoreSigs
   }
 
   /** Sign the transaction body with private key(s) and add to attached signatures */
@@ -431,8 +455,8 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** Collect unique set of account/permission for all actions in transaction
    * Retrieves public keys from the chain by retrieving account(s) when needed */
-  public async fetchAuthorizationsRequired(): Promise<EosAuthorization[]> {
-    const requiredAuths = new Set<EosAuthorization>()
+  public async fetchAuthorizationsRequired(): Promise<EosAuthorizationPerm[]> {
+    const requiredAuths = new Set<EosAuthorizationPerm>()
     const actions = this._actions
     if (actions) {
       actions
@@ -445,9 +469,9 @@ export class EosTransaction implements Interfaces.Transaction {
         })
     }
     // get the unique set of account/permissions
-    const requiredAuthsArray = Helpers.getUniqueValues<EosAuthorization>(Array.from(requiredAuths))
+    const requiredAuthsArray = Helpers.getUniqueValues<EosAuthorizationPerm>(Array.from(requiredAuths))
     // attach public keys for each account/permission - fetches accounts from chain where necessary
-    return this.addPublicKeysToAuths(requiredAuthsArray)
+    return this.addPermissionToAuths(requiredAuthsArray)
   }
 
   // TODO: This code only works if the firstPublicKey is the only required Key
@@ -456,24 +480,26 @@ export class EosTransaction implements Interfaces.Transaction {
   /** Fetch the public key (from the chain) for the provided account and permission
    *  Also caches permission/publicKey mappings - the cache can be set externally via appendPublicKeyCache
    */
-  private async getPublicKeyForAuthorization(accountName: EosEntityName, permissionName: EosEntityName) {
-    let publicKey
-    const cachedPublicKey = (
+  private async getPermissionForAuthorization(accountName: EosEntityName, permissionName: EosEntityName) {
+    let permission: EosRequiredAuthorization
+    const cachedPermission = (
       this._publicKeyMap.find(m => m.accountName === accountName && m.permissionName === permissionName) || {}
-    ).publicKey
-    if (cachedPublicKey) {
-      publicKey = toEosPublicKey(cachedPublicKey)
+    ).permission
+    if (cachedPermission) {
+      // TODO only support keys at this time need to do the work for accounts to work
+      permission = cachedPermission
     } else {
       const account = await this.getAccount(accountName)
-      const permission = account?.permissions.find(p => p.name === permissionName)
-      if (!permission?.firstPublicKey) {
+      const perm = account?.permissions.find(p => p.name === permissionName)
+      if (!perm?.requiredAuth) {
         Errors.throwNewError(`Account ${accountName} doesn't have a permission named ${permissionName}.`)
       }
-      publicKey = toEosPublicKey(permission?.firstPublicKey)
+      // set to requiredAuth keys
+      permission = perm?.requiredAuth
       // save key to map cache
-      this.appendPublicKeyCache([{ accountName, permissionName, publicKey }])
+      this.appendPermissionCache([{ accountName, permissionName, permission }])
     }
-    return publicKey
+    return permission
   }
 
   /** Fetches account names from the chain (and adds to private cache) */
@@ -497,21 +523,21 @@ export class EosTransaction implements Interfaces.Transaction {
   /** Use an already fetched map of account/permission to public keys
    *  Can improve performance - otherwise this class needs to retrieve accounts from the chain
    *  Also neccessary for creating a new account which isnt yet on the chain */
-  appendPublicKeyCache(publicKeysMap: PublicKeyMapCache[]): void {
-    this._publicKeyMap = [...this._publicKeyMap, ...publicKeysMap]
+  appendPermissionCache(permissionMap: PermissionMapCache[]): void {
+    this._publicKeyMap = [...this._publicKeyMap, ...permissionMap]
   }
 
   /** Fetches public keys (from the chain) for each account/permission pair
    *   Fetches accounts from the chain (if not already cached)
    */
-  private async addPublicKeysToAuths(auths: EosAuthorization[]) {
-    const returnedAuth: EosAuthorization[] = []
+  private async addPermissionToAuths(auths: EosAuthorizationPerm[]) {
+    const returnedAuth: EosAuthorizationPerm[] = []
 
-    const keysToGet = auths.map(async auth => {
-      const publicKey = await this.getPublicKeyForAuthorization(auth.account, auth.permission)
-      returnedAuth.push({ ...auth, publicKey })
+    const permsToGet = auths.map(async auth => {
+      const requiredAuthorization = await this.getPermissionForAuthorization(auth.account, auth.permission)
+      returnedAuth.push({ ...auth, requiredAuthorization })
     })
-    await Promise.all(keysToGet)
+    await Promise.all(permsToGet)
     return returnedAuth
   }
 
