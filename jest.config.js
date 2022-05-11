@@ -1,7 +1,8 @@
+import fs from 'fs'
+
 function makeModuleNameMapper() {
-  const TS_CONFIG_PATH = './tsconfig-paths.json';
-  const {paths} = require(TS_CONFIG_PATH).compilerOptions;
   const aliases = {};
+  const { paths } = JSON.parse(fs.readFileSync('./tsconfig-paths.json')).compilerOptions
 
   // Iterate over paths and convert them into moduleNameMapper format
   Object.keys(paths).forEach((item) => {
@@ -12,7 +13,7 @@ function makeModuleNameMapper() {
   return aliases;
 }
 
-module.exports = {
+export default {
   automock: false,
   roots: [
     '<rootDir>/tests',

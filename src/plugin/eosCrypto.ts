@@ -10,6 +10,7 @@ import {
   CryptoAsymmetricModels,
   CryptoAsymmetricHelpers,
 } from '@open-rights-exchange/chain-js'
+import { Keygen } from 'eosjs-keygen'
 import { TRANSACTION_ENCODING } from './eosConstants'
 import { EosAccountKeys, EosSignature, EosPublicKey, EosPrivateKey, EosKeyPair } from './models'
 // import { Signature } from '../../models'
@@ -19,8 +20,7 @@ import { toEosPublicKey } from './helpers'
 // import * as AsymmetricHelpers from '../../crypto/asymmetricHelpers'
 // import { AsymmetricScheme } from '../../crypto/asymmetricModels'
 
-const { Keygen } = require('eosjs-keygen')
-
+// const { Keygen } = require('eosjs-keygen')
 // eslint-disable-next-line prefer-destructuring
 export const defaultIter = Crypto.AesCrypto.defaultIter
 // eslint-disable-next-line prefer-destructuring

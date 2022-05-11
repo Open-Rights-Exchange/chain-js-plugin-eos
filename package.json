@@ -1,9 +1,11 @@
 {
   "name": "@open-rights-exchange/chain-js-plugin-eos",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "sideEffects": false,
+  "type": "module",
   "scripts": {
     "webpack": "webpack --mode=production --node-env=production --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
     "webpack:dev": "webpack --mode=development --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
@@ -13,7 +15,8 @@
     "lint-fix": "eslint src --fix",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
-    "test": "jest --runInBand --coverage --detectOpenHandles"
+    "test": "jest --runInBand --coverage --detectOpenHandles",
+    "localpublish": "zalc publish && zalc push"
   },
   "repository": {
     "type": "git",
@@ -61,5 +64,9 @@
   },
   "peerDependencies": {
     "@open-rights-exchange/chain-js": "^4.0.0"
-  }
+  },
+  "files": [
+    "dist",
+    "src"
+  ]
 }
