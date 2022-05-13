@@ -2,21 +2,28 @@
   "name": "@open-rights-exchange/chain-js-plugin-eos",
   "version": "4.1.0",
   "description": "",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/cjs/src/index.js",
+  "module": "dist/mjs/src/index.js",
+  "types": "dist/mjs/src/index.d.ts",
   "sideEffects": false,
-  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/src/index.js",
+      "require": "./dist/cjs/src/index.js"
+    }
+  },
   "scripts": {
     "webpack": "webpack --mode=production --node-env=production --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
     "webpack:dev": "webpack --mode=development --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
     "copyToChainJS": "cp dist/chain-js-plugin-eos-umd.js ../chain-js/dist/chain-js-plugin-eos-umd.js",
-    "build": "rm -rf dist/* && tsc --build tsconfig.json",
+    "_build": "rm -rf dist/* && tsc --build tsconfig.json",
     "lint": "eslint src",
     "lint-fix": "eslint src --fix",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
     "test": "jest --runInBand --coverage --detectOpenHandles",
-    "localpublish": "zalc publish && zalc push"
+    "localpublish": "zalc publish && zalc push",
+    "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./fixup"
   },
   "repository": {
     "type": "git",
