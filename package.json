@@ -6,12 +6,6 @@
   "module": "dist/mjs/src/index.js",
   "types": "dist/mjs/src/index.d.ts",
   "sideEffects": false,
-  "exports": {
-    ".": {
-      "import": "./dist/mjs/src/index.js",
-      "require": "./dist/cjs/src/index.js"
-    }
-  },
   "scripts": {
     "webpack": "webpack --mode=production --node-env=production --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
     "webpack:dev": "webpack --mode=development --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
