@@ -10,18 +10,21 @@ import {
   EosPublicKeys,
   EosChainActionType,
   EosTransactionOptions,
+  EosCreateAccountAuthorizations,
+  EosPublicKey,
+  MsigAuthOptions,
 } from './models/index'
 import { EosAccount } from './eosAccount'
-// import { throwNewError } from '../../errors'
-// import { CreateAccount } from '../../interfaces'
 import { EosTransaction } from './eosTransaction'
 import {
-  isValidEosPublicKey,
   timestampEosBase32,
   randomEosBase32,
   toEosEntityName,
   toEosPublicKey,
   isValidEosAsset,
+  publicKeyToAuth,
+  msigOptionToAuth,
+  isValidEosPublicKey,
 } from './helpers'
 import {
   ACCOUNT_NAME_MAX_LENGTH,
@@ -31,10 +34,8 @@ import {
   DEFAULT_ORE_ACCOUNT_TIER,
 } from './eosConstants'
 import { generateNewAccountKeysAndEncryptPrivateKeys } from './eosCrypto'
-// import { isNullOrEmpty, isANumber } from '../../helpers'
 import { composeAction, composeActions } from './eosCompose'
 import { PermissionsHelper } from './eosPermissionsHelper'
-// import { ChainActionType, ChainErrorType } from '../../models'
 
 /** Helper class to compose a transction for creating a new chain account
  *  Handles native, virtual, and createEscrow accounts
@@ -53,11 +54,15 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
 
   private _options: EosCreateAccountOptions
 
+  /** Either publicKeys or multisigOptions will  be converted and stored here */
+  private _authorizations: EosCreateAccountAuthorizations = {}
+
   private _generatedKeys: Partial<EosGeneratedKeys>
 
   constructor(chainState: EosChainState, options?: EosCreateAccountOptions) {
     this._chainState = chainState
     this._options = this.applyDefaultOptions(options)
+    this.assertValidOptionsAndSetAuth()
   }
 
   public async init(): Promise<void> {
@@ -94,6 +99,48 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
     return null
   }
 
+  get isMultisig() {
+    if (Helpers.isNullOrEmpty(this.options?.multisigOptions)) return false
+    return true
+  }
+
+  assertValidOptionsAndSetAuth() {
+    const { publicKeys, multisigOptions } = this.options
+    // If authorizations passed, throw if any other auth options is passed (publicKeys or multisigOptions) and return
+    if (!Helpers.isNullOrEmpty(publicKeys) && !Helpers.isNullOrEmpty(multisigOptions))
+      Errors.throwNewError('Both publicKeys and multisigOptions can not be provided')
+
+    if (!Helpers.isNullOrEmpty(publicKeys)) {
+      this._authorizations.owner = publicKeys?.owner ? publicKeyToAuth(publicKeys.owner) : null
+      this._authorizations.active = publicKeys?.active ? publicKeyToAuth(publicKeys.active) : null
+      return
+    }
+
+    if (!Helpers.isNullOrEmpty(multisigOptions)) {
+      const { owner, active } = multisigOptions
+      if (Helpers.isNullOrEmpty(owner) && Helpers.isNullOrEmpty(active)) {
+        Errors.throwNewError('If multisigOptions is provided, both active and owner has to be provided.')
+      }
+      this._authorizations.owner = isValidEosPublicKey(multisigOptions?.owner as EosPublicKey)
+        ? publicKeyToAuth(multisigOptions.owner as EosPublicKey)
+        : msigOptionToAuth(multisigOptions.owner as MsigAuthOptions)
+      this._authorizations.active = isValidEosPublicKey(multisigOptions?.active as EosPublicKey)
+        ? publicKeyToAuth(multisigOptions.active as EosPublicKey)
+        : msigOptionToAuth(multisigOptions.active as MsigAuthOptions)
+    }
+  }
+
+  /** Only available if NOT multisig */
+  get activeAndOwnerPublicKeys(): EosPublicKeys {
+    if (this.isMultisig) {
+      Errors.throwNewError('activeAndOwnerPublicKeys can NOT be called if multisigOptions is provided.')
+    }
+    return {
+      owner: this._authorizations?.owner?.keys[0]?.key,
+      active: this._authorizations?.active?.keys[0]?.key,
+    }
+  }
+
   /** Account creation options */
   get options() {
     return this._options
@@ -122,8 +169,6 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
     const { tier, referralAccountName } = oreOptions || {}
     const { contractName, appName } = createEscrowOptions || {}
     const { ramBytes, stakeNetQuantity, stakeCpuQuantity, transfer } = resourcesOptions || {}
-
-    this.assertValidOptionPublicKeys()
     this.assertValidOptionNewKeys()
 
     // determine account name - generate account name if once wasn't provided
@@ -140,20 +185,10 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
 
     await this.generateKeysIfNeeded()
     const { publicKeys } = this.options
-
-    // if recyclying an account, we don't want a generated owner key, we will expect it to be = unusedAccountPublicKey
-    if (recycleAccount) {
-      publicKeys.owner = null
-    }
-
-    // check that we have account resource options for a native account (not needed if we are recycling)
-    if (!recycleAccount && accountType === EosNewAccountType.Native) {
-      this.assertValidOptionsResources()
-    }
-
     // compose action - call the composeAction type to generate the right transaction action
     let createAccountActions: EosActionStruct[]
     const { active: publicKeyActive, owner: publicKeyOwner } = publicKeys || {}
+    const { active: authActive, owner: authOwner } = this._authorizations
     const params = {
       accountName: newAccountName,
       contractName,
@@ -161,6 +196,10 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
       creatorAccountName,
       creatorPermission,
       tier,
+      // For native account creation auth is provided to support multisig
+      authOwner,
+      authActive,
+      // For createescrow only one publicKey for each permission needs to be provided.
       publicKeyActive,
       publicKeyOwner,
       referralAccountName,
@@ -169,9 +208,10 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
       stakeCpuQuantity,
       transfer,
     }
-
     // To recycle an account, we dont create new account, just replace keys on an existing one
     if (recycleAccount) {
+      // if recyclying an account, we don't want a generated owner key, we will expect it to be = unusedAccountPublicKey
+      publicKeys.owner = null
       // we've already confirmed (in generateAccountName) that account can be recycled
       const parentAccount = new EosAccount(this._chainState)
       // replacing the keys of an existing account, so fetch it first
@@ -193,6 +233,8 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
     } else {
       switch (accountType) {
         case EosNewAccountType.Native:
+          // check that we have account resource options for a native account (not needed if we are recycling)
+          this.assertValidOptionsResources()
           // composeAction(s) retruns an array of actions - so we dont need to include it in an array here
           createAccountActions = await composeActions(Models.ChainActionType.AccountCreate, params)
           break
@@ -279,15 +321,15 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
   }
 
   /** Checks create options - if publicKeys are missing,
-   *  autogenerate the public and private key pair and add them to options */
+   *  autogenerate the public and private key pair and add them to options
+   *  If multisigOptions provided, just returns */
   async generateKeysIfNeeded() {
-    let publicKeys: EosPublicKeys
-    // get keys from paramters or freshly generated
-    publicKeys = this.getPublicKeysFromOptions() || {}
-    const { owner, active } = publicKeys
+    if (this.isMultisig) {
+      return
+    }
+    const { owner, active } = this.activeAndOwnerPublicKeys
     if (!owner || !active) {
-      await this.generateAccountKeys(publicKeys)
-      publicKeys = this._generatedKeys?.accountKeys?.publicKeys
+      await this.generateAccountKeys(this.activeAndOwnerPublicKeys)
     }
   }
 
@@ -326,16 +368,18 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
     const { password, encryptionOptions } = newKeysOptions || {}
     const generatedKeys = await generateNewAccountKeysAndEncryptPrivateKeys(
       password,
-      {
-        publicKeys: overridePublicKeys,
-      },
+      overridePublicKeys,
       encryptionOptions,
     )
     this._generatedKeys = {
       ...this._generatedKeys,
       accountKeys: generatedKeys,
     }
-    this._options.publicKeys = this._generatedKeys?.accountKeys?.publicKeys // replace working keys with new ones
+    // this._options.publicKeys = this._generatedKeys?.accountKeys?.publicKeys // replace working keys with new ones
+    this._authorizations = {
+      owner: publicKeyToAuth(this._generatedKeys?.accountKeys?.publicKeys.owner),
+      active: publicKeyToAuth(this._generatedKeys?.accountKeys?.publicKeys.active),
+    }
   }
 
   /** Compose an updateAuth command to add a permission to the virtual 'master' account */
@@ -397,28 +441,6 @@ export class EosCreateAccount implements Interfaces.CreateAccount {
       deepestPermissionName,
     )
     return newVirtualAccountPermission
-  }
-
-  /** extract keys from options
-   *  Returns publicKeys */
-  private getPublicKeysFromOptions(): EosPublicKeys {
-    const { publicKeys } = this._options || {}
-    const { owner, active } = publicKeys || {}
-    if (!owner && !active) {
-      return null
-    }
-    return publicKeys
-  }
-
-  private assertValidOptionPublicKeys() {
-    const { publicKeys } = this._options
-    const { active, owner } = publicKeys || {}
-    if (active && !isValidEosPublicKey(active)) {
-      Errors.throwNewError('Invalid Option - Provided active publicKey isnt valid')
-    }
-    if (owner && !isValidEosPublicKey(owner)) {
-      Errors.throwNewError('Invalid Option - Provided owner publicKey isnt valid')
-    }
   }
 
   private assertValidOptionNewKeys() {
