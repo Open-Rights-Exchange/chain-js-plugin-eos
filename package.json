@@ -3,8 +3,8 @@
   "version": "4.1.0",
   "description": "",
   "main": "dist/cjs/src/index.js",
-  "module": "dist/mjs/src/index.js",
-  "types": "dist/mjs/src/index.d.ts",
+  "_module": "dist/mjs/src/index.js",
+  "_types": "dist/mjs/src/index.d.ts",
   "sideEffects": false,
   "scripts": {
     "webpack": "webpack --mode=production --node-env=production --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
@@ -67,7 +67,6 @@
     "@open-rights-exchange/chain-js": "^4.0.0"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ]
 }
