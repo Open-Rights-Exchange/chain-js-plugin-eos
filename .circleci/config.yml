@@ -13,6 +13,29 @@ executors:
 
 # jobs that this workflow will run
 jobs:
+  setup-chainjs:
+    # directory commands will run from by default
+    # usually set to organization/repo
+    working_directory: ~/API-market/chain-js
+    shell: /bin/bash --login -e
+    executor: node-executor
+    steps:
+      - run: echo $NPMRC | base64 -d > ~/.npmrc
+      # checkout the code. Because the default working_directory is the name of the repo 
+      # we need to go up a directory thus the `path: ".."`
+      - git clone --branch plugin-breakout git@github.com:Open-Rights-Exchange/chain-js.git
+      # call `yarn install`
+      - node/install-packages:
+          pkg-manager: npm
+      - run: npm run build          
+      # call the linter
+      # - run: yarn run lint
+      # save the installed modules and configured repo for the following steps
+      - persist_to_workspace:
+          root: ~/API-market
+          paths:
+            - chain-js
+
   setup:
     # directory commands will run from by default
     # usually set to organization/repo
@@ -20,12 +43,14 @@ jobs:
     shell: /bin/bash --login -e
     executor: node-executor
     steps:
+      - attach_workspace:
+      at: ~/API-market
       # checkout the code. Because the default working_directory is the name of the repo 
       # we need to go up a directory thus the `path: ".."`
       - checkout
       # call `yarn install`
       - node/install-packages:
-          pkg-manager: yarn
+          pkg-manager: npm
       # call the linter
       # - run: yarn run lint
       # save the installed modules and configured repo for the following steps
@@ -44,7 +69,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/API-market
-      - run: yarn run test
+      - run: npm run test
 
   deploy:
     # directory commands will run from by default
@@ -57,14 +82,17 @@ jobs:
           at: ~/API-market
       # get npmrc token
       - run: echo $NPMRC | base64 -d > ~/.npmrc
-      - run: yarn run build
-      - run: yarn publish --no-git-tag-version
+      - run: npm run build
+      - run: npm publish --no-git-tag-version
 
 # define the jobs to run
 workflows:
   build_and_test:
     jobs:
-      - setup
+      - setup-chainjs
+      - setup:
+          requires:
+            - setup-chainjs
       - test:
           requires:
             - setup
