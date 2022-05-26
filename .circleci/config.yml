@@ -44,7 +44,7 @@ jobs:
     executor: node-executor
     steps:
       - attach_workspace:
-      at: ~/API-market
+        at: ~/API-market
       # checkout the code. Because the default working_directory is the name of the repo 
       # we need to go up a directory thus the `path: ".."`
       - checkout
