@@ -31,7 +31,7 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
           app-dir: ~/API-market/chain-js
-      - run: npm --prefix ./chain-js run run build          
+      - run: npm --prefix ./chain-js run build          
       # call the linter
       # - run: yarn run lint
       # save the installed modules and configured repo for the following steps
