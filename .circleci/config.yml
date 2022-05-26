@@ -20,10 +20,10 @@ jobs:
     shell: /bin/bash --login -e
     executor: node-executor
     steps:
-      - run: echo $NPMRC | base64 -d > ~/.npmrc
-      # checkout the code. Because the default working_directory is the name of the repo 
-      # we need to go up a directory thus the `path: ".."`
-      - git clone --branch plugin-breakout git@github.com:Open-Rights-Exchange/chain-js.git
+      - run:
+            name: Clone frontend repository
+            command: >-
+              git clone --branch plugin-breakout git@github.com:Open-Rights-Exchange/chain-js.git
       # call `yarn install`
       - node/install-packages:
           pkg-manager: npm
