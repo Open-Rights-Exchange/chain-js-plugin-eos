@@ -16,7 +16,7 @@ jobs:
   setup-chainjs:
     # directory commands will run from by default
     # usually set to organization/repo
-    working_directory: ~/API-market/chain-js
+    working_directory: ~/API-market
     shell: /bin/bash --login -e
     executor: node-executor
     steps:
@@ -30,6 +30,7 @@ jobs:
       # call `yarn install`
       - node/install-packages:
           pkg-manager: npm
+          app-dir: ~/API-market/chain-js
       - run: npm run build          
       # call the linter
       # - run: yarn run lint
