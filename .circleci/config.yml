@@ -1,0 +1,113 @@
+# version of circleci config to use
+version: 2.1
+
+# orbs to use for the project
+# information: https://circleci.com/orbs/
+orbs:
+  node: circleci/node@5.0.0
+
+executors:
+  node-executor:
+    docker:
+      - image: node:16.13.2
+
+# jobs that this workflow will run
+jobs:
+  setup-chainjs:
+    # directory commands will run from by default
+    # usually set to organization/repo
+    working_directory: ~/API-market
+    shell: /bin/bash --login -e
+    executor: node-executor
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:p2QAMXNIC1TJYWeIOttrVc98/R1BUFWu3/LiyKgUfQM"
+      - run:
+            name: Clone frontend repository
+            command: >-
+              git clone --branch plugin-breakout https://github.com/Open-Rights-Exchange/chain-js.git
+      # call `yarn install`
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: ~/API-market/chain-js
+      - run: npm --prefix ./chain-js run build          
+      # call the linter
+      # - run: yarn run lint
+      # save the installed modules and configured repo for the following steps
+      - persist_to_workspace:
+          root: ~/API-market
+          paths:
+            - chain-js
+
+  setup:
+    # directory commands will run from by default
+    # usually set to organization/repo
+    working_directory: ~/API-market/chain-js-plugin-eos
+    shell: /bin/bash --login -e
+    executor: node-executor
+    steps:
+      - attach_workspace:
+          at: ~/API-market
+      # checkout the code. Because the default working_directory is the name of the repo 
+      # we need to go up a directory thus the `path: ".."`
+      - checkout
+      # call `yarn install`
+      - node/install-packages:
+          pkg-manager: npm
+      # call the linter
+      # - run: yarn run lint
+      # save the installed modules and configured repo for the following steps
+      - persist_to_workspace:
+          root: ~/API-market
+          paths:
+            - chain-js-plugin-eos
+
+  # job to run the tests
+  test:
+    # directory commands will run from by default
+    # usually set to organization/repo
+    working_directory: ~/API-market/chain-js-plugin-eos
+    shell: /bin/bash --login -e
+    executor: node-executor
+    steps:
+      - attach_workspace:
+          at: ~/API-market
+      - run: npm run test
+
+  deploy:
+    # directory commands will run from by default
+    # usually set to organization/repo
+    working_directory: ~/API-market/chain-js-plugin-eos
+    shell: /bin/bash --login -e
+    executor: node-executor
+    steps:
+      - attach_workspace:
+          at: ~/API-market
+      # get npmrc token
+      - run: echo $NPMRC | base64 -d > ~/.npmrc
+      - run: npm run build
+      - run: npm publish --no-git-tag-version
+
+# define the jobs to run
+workflows:
+  build_and_test:
+    jobs:
+      - setup-chainjs
+      - setup:
+          requires:
+            - setup-chainjs
+      - test:
+          requires:
+            - setup
+      - deploy:
+          requires:
+            - test
+          # only run deploy step on tags
+          context:
+            - global-env
+          filters:
+            # ignore any commit on any branch by default
+            branches:
+              only: 
+                - master
