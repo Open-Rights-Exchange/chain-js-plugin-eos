@@ -1,5 +1,6 @@
 // How to use fetch mocks - https://www.npmjs.com/package/jest-fetch-mock
 import { Models } from '@open-rights-exchange/chain-js'
+import { publicKeyToAuth, toEosPublicKey } from '../helpers'
 import { composeAction } from '../eosCompose'
 // import { ChainActionType } from '../../../models'
 import {
@@ -33,8 +34,8 @@ describe('Compose Chain Actions', () => {
       accountName: 'accountname',
       creatorAccountName: 'creatoracc',
       creatorPermission: 'active',
-      publicKeyActive: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma',
-      publicKeyOwner: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma',
+      authActive: publicKeyToAuth(toEosPublicKey('EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma')),
+      authOwner: publicKeyToAuth(toEosPublicKey('EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma')),
       ramBytes: 3072,
       stakeNetQuantity: '1.0000 EOS',
       stakeCpuQuantity: '1.0000 EOS',
