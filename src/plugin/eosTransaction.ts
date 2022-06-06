@@ -318,7 +318,10 @@ export class EosTransaction implements Interfaces.Transaction {
   private checkAuthSigned(auth: EosRequiredAuthorization): boolean {
     const weights: number[] = []
     auth?.keys?.forEach(keyObj => weights.push(this.hasSignatureForPublicKey(keyObj.key) ? keyObj.weight : 0))
-    auth?.accounts?.map(async accObj => {
+    const authAccountsToCheck = auth?.accounts?.filter(
+      authAcc => authAcc.permission.permission !== Helpers.toChainEntityName('eosio.code'),
+    )
+    authAccountsToCheck?.map(async accObj => {
       const subWeights: number[] = []
       const { subAuth } = accObj
       const { threshold: subThreshold, keys: subKeys } = subAuth
@@ -447,7 +450,9 @@ export class EosTransaction implements Interfaces.Transaction {
         .forEach(auths => {
           auths.forEach(auth => {
             const { actor: account, permission } = auth
-            requiredAuths.add({ account, permission })
+            if (permission !== Helpers.toChainEntityName('eosio.code')) {
+              requiredAuths.add({ account, permission })
+            }
           })
         })
     }
@@ -458,8 +463,11 @@ export class EosTransaction implements Interfaces.Transaction {
     // Attach subAuth for each accountName/permission specified as Authorization.
     const uniqueRequiredAuthsWithSubAuthPromises = uniqueRequiredAuths?.map(async uAuth => {
       const { accounts } = uAuth?.requiredAuthorization
-      if (accounts?.length > 0) {
-        const accountsWithAuthPromises = accounts.map(async accObj => {
+      const accountsToGetSubAuths = accounts.filter(
+        account => account.permission.permission !== Helpers.toChainEntityName('eosio.code'),
+      )
+      if (accountsToGetSubAuths?.length > 0) {
+        const accountsWithAuthPromises = accountsToGetSubAuths.map(async accObj => {
           const { permission } = accObj
           const { actor, permission: permissionName } = permission
           const permToGetAuth: EosAuthorizationPerm = {
@@ -468,7 +476,7 @@ export class EosTransaction implements Interfaces.Transaction {
           }
           const [subAuthPerm] = await this.addAuthToPermissions([permToGetAuth])
           const { requiredAuthorization: subRequiredAuth } = subAuthPerm
-          if (!Helpers.isNullOrEmpty(subRequiredAuth.accounts)) {
+          if (!Helpers.isNullOrEmpty(subRequiredAuth?.accounts)) {
             Errors.throwNewError('ChainJs doesnt support nested accounts permission')
           }
           return { ...accObj, subAuth: subRequiredAuth }
