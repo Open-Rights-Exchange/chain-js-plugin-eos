@@ -8,7 +8,7 @@ import { RpcError } from 'eosjs'
 // import { Chain, ChainFactory, ChainType } from '../../../index'
 // import { Asymmetric, AesCrypto } from '../../../crypto'
 // import { ChainActionType, ConfirmType } from '../../../models'
-import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chain-js'
+import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType, PluginChainFactory } from '@open-rights-exchange/chain-js'
 import { toEosEntityName, toEosPrivateKey, toEosPublicKey, toEosAsset, toEosSymbol } from '../helpers'
 import { EosAccount } from '../eosAccount'
 import { EosTransaction } from '../eosTransaction'
@@ -105,7 +105,7 @@ const transferTokenOptions = {
 
 async function run() {
   // Create an EOS chain and call a few functions
-  const kylin = new ChainFactory().create(ChainType.EosV2, kylinEndpoints, chainSettings)
+  const kylin = PluginChainFactory([ChainEosV2], ChainType.EosV2, kylinEndpoints, chainSettings)
   await kylin.connect()
 
   //  ---> set transaction from serialized

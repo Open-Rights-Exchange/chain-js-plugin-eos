@@ -1,6 +1,7 @@
-import * as ecc from 'eosjs-ecc'
 import { Helpers } from '@open-rights-exchange/chain-js'
 import { EosPrivateKey, EosPublicKey, EosSignature } from '../models'
+
+const ecc = require('eosjs-ecc')
 // import { isNullOrEmpty } from '../../../helpers'
 
 export function isValidEosPublicKey(value: EosPublicKey | string): value is EosPublicKey {
