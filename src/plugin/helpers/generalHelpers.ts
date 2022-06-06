@@ -1,7 +1,8 @@
 // import { isNullOrEmpty } from '../../../helpers'
-import { Helpers } from '@open-rights-exchange/chain-js'
+import { Errors, Helpers } from '@open-rights-exchange/chain-js'
 
-import { EosActionAuthorizationStruct } from '../models'
+import { EosActionAuthorizationStruct, EosAuthorizationStruct, EosPublicKey, MsigAuthOptions } from '../models'
+import { isValidEosPublicKey } from './cryptoModelHelpers'
 
 const EOS_BASE = 31 // Base 31 allows us to leave out '.', as it's used for account scope
 
@@ -36,4 +37,40 @@ export function getFirstAuthorizationIfOnlyOneExists(
   }
 
   return null
+}
+
+export function publicKeyToAuth(publicKey: EosPublicKey): EosAuthorizationStruct {
+  if (!isValidEosPublicKey(publicKey)) {
+    Errors.throwNewError('Invalid Option - Provided active publicKey isnt valid')
+  }
+  return {
+    threshold: 1,
+    keys: [
+      {
+        key: publicKey,
+        weight: 1,
+      },
+    ],
+    accounts: Array<any>(),
+    waits: Array<any>(),
+  }
+}
+
+export function msigOptionToAuth(msigOption: MsigAuthOptions): EosAuthorizationStruct {
+  const { threshold, accounts, keys } = msigOption
+  return {
+    threshold,
+    keys: keys || [],
+    accounts:
+      accounts?.map(account => {
+        return {
+          permission: {
+            actor: account.accountName,
+            permission: account.permission,
+          },
+          weight: account.weight,
+        }
+      }) || [],
+    waits: Array<any>(),
+  }
 }

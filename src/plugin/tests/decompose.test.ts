@@ -20,6 +20,7 @@ import {
   composedOreUpsertRight,
 } from './mockups/composedActions'
 import { decomposeAction } from '../eosDecompose'
+import { publicKeyToAuth, toEosPublicKey } from '../helpers'
 
 describe('Decompose Chain Actions', () => {
   it('decomposes account create action object', async () => {
@@ -30,8 +31,8 @@ describe('Decompose Chain Actions', () => {
           accountName: 'accountname',
           creatorAccountName: 'creatoracc',
           creatorPermission: 'active',
-          publicKeyActive: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma',
-          publicKeyOwner: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma',
+          authActive: publicKeyToAuth(toEosPublicKey('EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma')),
+          authOwner: publicKeyToAuth(toEosPublicKey('EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma')),
         },
         partial: false,
       },

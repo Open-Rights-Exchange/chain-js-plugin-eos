@@ -1,5 +1,6 @@
-import { EosEntityName, EosAsset, EosNewKeysOptions } from './generalModels'
+import { EosEntityName, EosAsset, EosNewKeysOptions, EosMultisigCreateAccountOptions } from './generalModels'
 import { EosPublicKey } from './cryptoModels'
+import { EosAuthorizationStruct } from './eosStructures'
 
 /** Type of account to create */
 export enum EosNewAccountType {
@@ -18,13 +19,22 @@ export type EosPublicKeys = {
   active?: EosPublicKey
 }
 
+export type EosCreateAccountAuthorizations = {
+  owner?: EosAuthorizationStruct
+  active?: EosAuthorizationStruct
+}
+
 export type EosCreateAccountOptions = {
   accountName?: EosEntityName // Optional - aka oreAccountName
   accountNamePrefix?: string // Default 'ore'
   creatorAccountName: EosEntityName
   creatorPermission: EosEntityName // Default = 'active'
-  /** to generate new keys (using newKeysOptions), leave both publicKeys as null */
+  /**  Both publicKeys and authorizations can not exist. Owner and Active authorizations has to be provided for creating new account,
+   * publicKeys can be provided for simplicity, when there is no need to specify threshold, weight and actors for authorization.
+   * to generate new keys (using newKeysOptions), leave authorizations and both publicKeys as null */
   publicKeys?: EosPublicKeys
+  /** Can not be provided together publicKeys. */
+  multisigOptions?: EosMultisigCreateAccountOptions
   newKeysOptions?: EosNewKeysOptions
   oreOptions?: {
     tier?: number // default = 1
