@@ -13,6 +13,7 @@ import {
   DeletePermissionsParams,
   UnlinkPermissionsParams,
   EosPermission,
+  EosAccountResources,
 } from './models'
 // import { Account } from '../../interfaces'
 // import { throwNewError } from '../../errors'
@@ -60,6 +61,14 @@ export class EosAccount implements Interfaces.Account {
     const allPublicKeys = new Set<EosPublicKey>()
     this.permissions?.forEach(p => p.requiredAuth.keys.forEach(k => allPublicKeys.add(k.key)))
     return [...allPublicKeys]
+  }
+
+  get resources(): EosAccountResources {
+    return {
+      cpuMicrosecondsAvailable: this._account.cpu_limit?.available,
+      netBytesAvailable: this._account.net_limit?.available,
+      ramBytesAvailable: this._account.ram_quota - this._account.ram_usage
+    }
   }
 
   /** Whether the account is already in use on chain */
