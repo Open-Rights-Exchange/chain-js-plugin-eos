@@ -25,7 +25,12 @@ import {
   ChainJsPluginOptions,
   throwNewError,
 } from '@open-rights-exchange/chain-js'
-import { NATIVE_CHAIN_TOKEN_ADDRESS, NATIVE_CHAIN_TOKEN_PRECISION, NATIVE_CHAIN_TOKEN_SYMBOL } from './eosConstants'
+import {
+  EOS_EXPIRATION_SUPPORTED_OPTIONS,
+  NATIVE_CHAIN_TOKEN_ADDRESS,
+  NATIVE_CHAIN_TOKEN_PRECISION,
+  NATIVE_CHAIN_TOKEN_SYMBOL,
+} from './eosConstants'
 // import { Chain } from '../../interfaces'
 // import { ChainError, throwNewError } from '../../errors'
 import * as eoscrypto from './eosCrypto'
@@ -117,6 +122,11 @@ class Plugin implements Chain {
       tokenAddress: toEosEntityName(NATIVE_CHAIN_TOKEN_ADDRESS),
       precision: NATIVE_CHAIN_TOKEN_PRECISION,
     }
+  }
+
+  /** Returns the supported expiration option metadata */
+  public get expirationSupportedOptions(): Models.TransactionSupportedExpirationOptions {
+    return EOS_EXPIRATION_SUPPORTED_OPTIONS
   }
 
   /** Get the token balance for an account from the chain
