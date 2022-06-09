@@ -8,9 +8,10 @@
 /* eslint-disable no-console */
 // import { Chain, ChainFactory, ChainType } from '../../../index'
 // import { Asymmetric, AesCrypto } from '../../../crypto'
-import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chain-js'
+import { Helpers, Models, Crypto, Chain, ChainType, PluginChainFactory } from '@open-rights-exchange/chain-js'
 import { toEosPrivateKey, toEosPublicKey } from '../helpers'
 import { eosPrivateKeyToEccPrivateKey, eosPublicKeyToEccPublicKey } from '../eosCrypto'
+import ChainEosV2 from '../ChainEosV2'
 
 require('dotenv').config()
 
@@ -34,7 +35,7 @@ const privateKey2 = toEosPrivateKey('5JuS5NoPKWBkriHNwLiRrsA2SDsv6ogSBdnCTu8v5Ek
 
 async function run() {
   // Create an EOS chain and call a few functions
-  const kylin = new ChainFactory().create(ChainType.EosV2, kylinEndpoints, chainSettings)
+  const kylin = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, kylinEndpoints, chainSettings)
   await kylin.connect()
 
   console.log('keyPair:', await kylin.generateKeyPair())

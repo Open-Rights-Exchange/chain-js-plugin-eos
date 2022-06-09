@@ -9,7 +9,7 @@
 import ChainEosV2 from '../ChainEosV2'
 import { RpcError } from 'eosjs'
 // import { ChainActionType } from '../../../models'
-import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chain-js'
+import { Helpers, Models, Crypto, Chain, ChainType, PluginChainFactory } from '@open-rights-exchange/chain-js'
 import { toEosEntityName, toEosSymbol } from '../helpers'
 
 require('dotenv').config()
@@ -42,10 +42,10 @@ async function run() {
   // const moonlightorePrivateKey_apporeid = toEosPrivateKey('xxxx')
 
   // Create an EOS chain and call a few functions
-  const kylin = new ChainFactory().create(ChainType.EosV2, kylinEndpoints, chainSettings)
+  const kylin = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, kylinEndpoints, chainSettings)
   await kylin.connect()
 
-  const oreStaging = new ChainFactory().create(ChainType.EosV2, oreStagingEndpoints, chainSettings)
+  const oreStaging = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, oreStagingEndpoints, chainSettings)
   await oreStaging.connect()
 
   // Misc examples

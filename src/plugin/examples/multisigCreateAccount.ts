@@ -2,10 +2,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
-import { toChainEntityName } from '@open-rights-exchange/chain-js/dist/src/helpers'
 import { ChainType, PluginChainFactory } from '@open-rights-exchange/chain-js'
 import { EosNewAccountType, EosMultisigCreateAccountOptions } from '../models'
-import { toEosAsset, toEosPublicKey } from '../helpers'
+import { toEosAsset, toEosEntityName, toEosPublicKey } from '../helpers'
 import ChainEosV2 from '../ChainEosV2'
 
 require('dotenv').config()
@@ -35,13 +34,13 @@ export const multisigOptionsExample: EosMultisigCreateAccountOptions = {
     // Uses accountName/permission
     accounts: [
       {
-        accountName: toChainEntityName('oremsigtest1'),
-        permission: toChainEntityName('active'),
+        accountName: toEosEntityName('oremsigtest1'),
+        permission: toEosEntityName('active'),
         weight: 1,
       },
       {
-        accountName: toChainEntityName('oremsigtest2'),
-        permission: toChainEntityName('active'),
+        accountName: toEosEntityName('oremsigtest2'),
+        permission: toEosEntityName('active'),
         weight: 1,
       },
     ],
