@@ -257,6 +257,7 @@ export class EosTransaction implements Interfaces.Transaction {
     }
     // this will throw an error if an account in transaction body doesn't exist on chain
     this._requiredAuthorizations = await this.fetchAuthorizationsRequired()
+    await this.assertTransactionNotExpired()
     this._isValidated = true
   }
 
@@ -271,6 +272,11 @@ export class EosTransaction implements Interfaces.Transaction {
     if (!this._isValidated) {
       Errors.throwNewError('Transaction not validated. Call transaction.validate() first.')
     }
+  }
+
+  public async assertTransactionNotExpired(): Promise<void> {
+    const hasExpired = await this._chainState.isTransactionExpired(this.raw)
+    if (hasExpired) Errors.throwNewError('Transaction has expired!')
   }
 
   // signatures
