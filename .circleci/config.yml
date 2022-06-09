@@ -26,7 +26,7 @@ jobs:
       - run:
             name: Clone frontend repository
             command: >-
-              git clone --branch plugin-breakout https://github.com/Open-Rights-Exchange/chain-js.git
+              git clone https://github.com/Open-Rights-Exchange/chain-js.git
       # call `yarn install`
       - node/install-packages:
           pkg-manager: npm
