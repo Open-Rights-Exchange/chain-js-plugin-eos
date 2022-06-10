@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+      "module": "commonjs",
+      "outDir": "dist/cjs",
+      "target": "es5",
+      "paths":
+      {
+          "@open-rights-exchange/chain-js":
+          [
+              "../chain-js/src"
+          ]
+      },
+  },
+  "references": [
+      {"path": "../chain-js"},
+  ],
+}

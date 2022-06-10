@@ -7,8 +7,8 @@
   "_types": "dist/mjs/src/index.d.ts",
   "sideEffects": false,
   "scripts": {
-    "webpack": "webpack --mode=production --node-env=production --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
-    "webpack:dev": "webpack --mode=development --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
+    "webpack": "webpack --mode=production --node-env=production --env use_local_chainjs_code_NOT_npm=false --config ./webpack.config.js && npm run copyToChainJS",
+    "webpack:local": "webpack --mode=development --env use_local_chainjs_code_NOT_npm=true --config ./webpack.config.js && npm run copyToChainJS",
     "copyToChainJS": "cp dist/chain-js-plugin-eos-umd.js ../chain-js/dist/chain-js-plugin-eos-umd.js",
     "_build": "rm -rf dist/* && tsc --build tsconfig.json",
     "lint": "eslint src",
@@ -17,7 +17,10 @@
     "prepublishOnly": "npm test && npm run lint",
     "test": "jest --runInBand --coverage --detectOpenHandles",
     "localpublish": "zalc publish && zalc push",
-    "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./fixup"
+    "build": "rm -fr dist/* && tsc -p tsconfig-mjs.json && tsc -p tsconfig-cjs.json && ./fixup",
+    "build:local": "rm -fr dist/* && tsc -p tsconfig-mjs-local.json && tsc -p tsconfig-cjs-local.json && ./fixup",
+    "example": "TS_NODE_PROJECT=tsconfig-cjs.json node -r ts-node/register/transpile-only --nolazy",
+    "example:local": "TS_NODE_PROJECT=tsconfig-cjs-local.json node -r ts-node/register/transpile-only -r tsconfig-paths/register --nolazy"
   },
   "repository": {
     "type": "git",
@@ -42,6 +45,8 @@
     "@types/node-fetch": "^2.5.4",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^14.0.0",

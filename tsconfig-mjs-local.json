@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "outDir": "dist/mjs",
+    "target": "es6",
+    "paths":
+    {
+        "@open-rights-exchange/chain-js":
+        [
+            "../chain-js/src"
+        ]
+    },
+  },
+  "references": [
+      {"path": "../chain-js"},
+  ],
+}

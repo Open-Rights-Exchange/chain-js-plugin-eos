@@ -24,7 +24,7 @@ module.exports = (env, argv) => {
         {
           test: /\.(ts|tsx)$/i,
           loader: "ts-loader",
-          options: {projectReferences: local_chainjs_alias_projectReferences},
+          options: {projectReferences: local_chainjs_alias_projectReferences,configFile: "tsconfig-mjs-local.json"},
           exclude: ["/node_modules/"],
         },
         {
@@ -80,6 +80,7 @@ module.exports = (env, argv) => {
         "stream": require.resolve('stream-browserify'),
         "path": false,
         "util": false,
+        "assert": false
       }
     },
     externals: {
