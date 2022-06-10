@@ -20,7 +20,8 @@
       "resolveJsonModule": true,
     },"include": [
         "./src/**/*.js",
-        "./src/**/*.ts"
+        "./src/**/*.ts",
+        "./webpack.config.js"
       ]
   }
   
