@@ -24,6 +24,12 @@ export type EosCreateAccountAuthorizations = {
   active?: EosAuthorizationStruct
 }
 
+export type EosAccountResources = {
+  cpuMicrosecondsAvailable: number 
+  netBytesAvailable: number
+  ramBytesAvailable: number
+}
+
 export type EosCreateAccountOptions = {
   accountName?: EosEntityName // Optional - aka oreAccountName
   accountNamePrefix?: string // Default 'ore'
