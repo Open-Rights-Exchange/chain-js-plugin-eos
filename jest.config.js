@@ -27,6 +27,7 @@ module.exports =  {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json', 'node'],
   globals: {
     'ts-jest': {
+      tsConfig: 'tsconfig-cjs.json',
       diagnostics: {
         warnOnly: true,
       },
