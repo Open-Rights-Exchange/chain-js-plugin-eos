@@ -44,6 +44,13 @@ export interface EosTransactionStruct {
   available_keys: EosPublicKey[]
 }
 
+/** Resouces required for transaction (in terms of cpuMicroseconds, netBytes, ramBytes) */
+export type EosTransactionResources = {
+  cpuMicroseconds: number
+  netBytes: number
+  ramBytes: number
+}
+
 /** EOS chain transaction history */
 export interface EosTransactionHistory {
   receipt: {
