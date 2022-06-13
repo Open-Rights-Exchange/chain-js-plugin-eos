@@ -1,0 +1,19 @@
+// Note that the only reason this tsconfig file exist is here is so that VSCode has visability into your local chain-js 
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "outDir": "dist/mjs",
+    "target": "es6",
+    "paths":
+    {
+        "@open-rights-exchange/chain-js":
+        [
+            "../chain-js/src"
+        ]
+    },
+  },
+  "references": [
+      {"path": "../chain-js"},
+  ],
+}
