@@ -625,6 +625,11 @@ export class EosTransaction implements Interfaces.Transaction {
     return false
   }
 
+  /** EOS requires resources for transaction on chain */
+  public get requiresResources(): boolean {
+    return true
+  }
+
   // TODO: to be implement
   public async resourcesRequired(): Promise<any> {
     Helpers.notImplemented()
