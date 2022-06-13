@@ -26,7 +26,7 @@ export type EosCreateAccountAuthorizations = {
 }
 
 export type EosAccountResources = {
-  cpuMicrosecondsAvailable: number 
+  cpuMicrosecondsAvailable: number
   netBytesAvailable: number
   ramBytesAvailable: number
   estimationType: Models.EstimationType
