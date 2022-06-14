@@ -67,7 +67,7 @@ export class EosAccount implements Interfaces.Account {
     return {
       cpuMicrosecondsAvailable: this._account.cpu_limit?.available,
       netBytesAvailable: this._account.net_limit?.available,
-      ramBytesAvailable: this._account.ram_quota - this._account.ram_usage
+      ramBytesAvailable: this._account.ram_quota - this._account.ram_usage,
     }
   }
 
