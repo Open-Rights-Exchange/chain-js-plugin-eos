@@ -29,7 +29,10 @@ export type EosAccountResources = {
   cpuMicrosecondsAvailable: number
   netBytesAvailable: number
   ramBytesAvailable: number
-  estimationType: Models.EstimationType
+  cpuPercentAvailable: number
+  netPercentAvailable: number
+  ramPercentAvailable: number
+  estimationType: Models.ResourceEstimationType
 }
 
 export type EosCreateAccountOptions = {
