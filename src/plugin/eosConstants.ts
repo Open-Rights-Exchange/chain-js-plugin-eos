@@ -29,10 +29,13 @@ export const NATIVE_CHAIN_TOKEN_ADDRESS = 'eosio.token'
 /** The number of decimal places for the EOS token  */
 export const NATIVE_CHAIN_TOKEN_PRECISION = 4
 
-/** This is a requirement that default eos node (nodeos) RPC assertion */
-export const EOS_MAX_EXPIRE_SECONDS = 3600
+/** The number of seconds in the future a transaction can be valid for */
+export const EOS_MAX_TRANSACTION_LIFESPAN_SECONDS = 3600
 
-export const EOS_EXPIRATION_SUPPORTED_OPTIONS: Models.TransactionSupportedExpirationOptions = {
+/** Transaction expiration constraints */
+export const EOS_TRANSACTION_EXPIRATION_OPTIONS: Models.TransactionExpirationOptions = {
+  /** Type of expiration constraint */
   transactionsExpirationType: Models.TransactionExpirationType.Deadline,
-  maxFutureSeconds: EOS_MAX_EXPIRE_SECONDS,
+  /** the maximum number of seconds that a transaction can valid for from current time */
+  maxFutureSeconds: EOS_MAX_TRANSACTION_LIFESPAN_SECONDS,
 }
