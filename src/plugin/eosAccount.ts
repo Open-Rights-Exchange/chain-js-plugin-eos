@@ -20,7 +20,6 @@ import {
 import { mapChainError } from './eosErrors'
 import { toEosEntityName } from './helpers'
 import { PermissionsHelper } from './eosPermissionsHelper'
-import { ResourceEstimationType } from '../../../chain-js/src/models'
 // import { ChainErrorType } from '../../models'
 
 // OREJS Ported functions
@@ -64,15 +63,22 @@ export class EosAccount implements Interfaces.Account {
     return [...allPublicKeys]
   }
 
+  /** account resources available */
   get resources(): EosAccountResources {
     return {
+      estimationType: Models.ResourceEstimationType.Exact,
       cpuMicrosecondsAvailable: this._account.cpu_limit?.available,
-      cpuPercentAvailable: this._account.cpu_limit.available / this._account.cpu_limit.max,
       netBytesAvailable: this._account.net_limit?.available,
-      netPercentAvailable: this._account.net_limit.available / this._account.net_limit.max,
       ramBytesAvailable: this._account.ram_quota - this._account.ram_usage,
-      ramPercentAvailable: (this._account.ram_quota - this._account.ram_usage) / this._account.ram_quota,
-      estimationType: ResourceEstimationType.Exact
+      cpuPercentAvailable: this._account.cpu_limit.max
+        ? this._account.cpu_limit.available / this._account.cpu_limit.max
+        : 0,
+      netPercentAvailable: this._account.net_limit.max
+        ? this._account.net_limit.available / this._account.net_limit.max
+        : 0,
+      ramPercentAvailable: this._account.ram_quota
+        ? (this._account.ram_quota - this._account.ram_usage) / this._account.ram_quota
+        : 0,
     }
   }
 
