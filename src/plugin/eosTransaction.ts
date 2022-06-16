@@ -17,6 +17,7 @@ import {
   EosRequiredAuthorization,
   EosAuthorizationPerm,
   PermissionMapCache,
+  EosTransactionResources,
 } from './models'
 
 export class EosTransaction implements Interfaces.Transaction {
@@ -275,8 +276,18 @@ export class EosTransaction implements Interfaces.Transaction {
   }
 
   public async assertTransactionNotExpired(): Promise<void> {
-    const hasExpired = await this._chainState.isTransactionExpired(this.raw)
-    if (hasExpired) Errors.throwNewError('Transaction has expired!')
+    const hasExpired = await this.isExpired(this.raw)
+    if (hasExpired) Errors.throwNewError('Transaction has expired')
+  }
+
+  /** Whether transaction has expired */
+  public async isExpired(transaction: EosRawTransaction): Promise<boolean> {
+    const { head_block_time: headBlockTime } = await this._chainState.getChainInfo()
+    const { expiration } = await this._chainState.api.deserializeTransactionWithActions(transaction)
+    const headBlockTimestamp = new Date(headBlockTime).getTime()
+    const expirationTimestamp = new Date(expiration).getTime()
+    if (headBlockTimestamp < expirationTimestamp) return false
+    return true
   }
 
   // signatures
@@ -625,14 +636,17 @@ export class EosTransaction implements Interfaces.Transaction {
     return false
   }
 
-  /** EOS requires resources for transaction on chain */
-  public get requiresResources(): boolean {
+  /** EOS requires chain resources for a transaction */
+  public get supportsResources(): boolean {
     return true
   }
 
-  // TODO: to be implement
-  public async resourcesRequired(): Promise<any> {
+  /** Chain resources required for Transaction */
+  public async resourcesRequired(): Promise<EosTransactionResources> {
+    // TODO: to be implemented
+    // estimationType: ResourceEstimationType.Estimate,
     Helpers.notImplemented()
+    return null
   }
 
   public async setDesiredFee(): Promise<any> {
