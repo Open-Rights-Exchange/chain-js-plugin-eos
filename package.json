@@ -1,6 +1,6 @@
 {
   "name": "@open-rights-exchange/chain-js-plugin-eos",
-  "version": "4.4.0",
+  "version": "4.6.0",
   "description": "",
   "main": "dist/cjs/src/index.js",
   "_module": "dist/mjs/src/index.js",
@@ -69,7 +69,7 @@
     "webpack-cli": "^4.9.2"
   },
   "peerDependencies": {
-    "@open-rights-exchange/chain-js": "^4.5.0"
+    "@open-rights-exchange/chain-js": "^4.6.0"
   },
   "files": [
     "dist",
