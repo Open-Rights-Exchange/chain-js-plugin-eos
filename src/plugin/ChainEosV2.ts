@@ -26,7 +26,7 @@ import {
   throwNewError,
 } from '@open-rights-exchange/chain-js'
 import {
-  EOS_EXPIRATION_SUPPORTED_OPTIONS,
+  EOS_TRANSACTION_EXPIRATION_OPTIONS,
   NATIVE_CHAIN_TOKEN_ADDRESS,
   NATIVE_CHAIN_TOKEN_PRECISION,
   NATIVE_CHAIN_TOKEN_SYMBOL,
@@ -125,8 +125,8 @@ class Plugin implements Chain {
   }
 
   /** Returns the supported expiration option metadata */
-  public get expirationSupportedOptions(): Models.TransactionSupportedExpirationOptions {
-    return EOS_EXPIRATION_SUPPORTED_OPTIONS
+  public get transactionExpirationOptions(): Models.TransactionExpirationOptions {
+    return EOS_TRANSACTION_EXPIRATION_OPTIONS
   }
 
   /** Get the token balance for an account from the chain

@@ -1,3 +1,4 @@
+import { Models } from '@open-rights-exchange/chain-js'
 import { EosPublicKey } from './cryptoModels'
 import { EosActionAuthorizationStruct } from './eosStructures'
 import { EosEntityName } from './generalModels'
@@ -44,8 +45,9 @@ export interface EosTransactionStruct {
   available_keys: EosPublicKey[]
 }
 
-/** Resouces required for transaction (in terms of cpuMicroseconds, netBytes, ramBytes) */
+/** Resouces required for transaction */
 export type EosTransactionResources = {
+  estimationType: Models.ResourceEstimationType
   cpuMicroseconds: number
   netBytes: number
   ramBytes: number

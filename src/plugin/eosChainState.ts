@@ -5,18 +5,16 @@ import nodeFetch, { Headers as NodeFetchHeaders } from 'node-fetch' // node only
 
 import { Helpers, Models, ChainError, Interfaces, Errors } from '@open-rights-exchange/chain-js'
 import {
-  EosSignature,
+  EosChainEndpoint,
+  EosChainSettings,
   EosEntityName,
   EOSGetTableRowsParams,
-  EosChainSettings,
-  EosTxResult,
-  EosChainEndpoint,
+  EosSignature,
   EosSymbol,
   EosTransactionHistory,
   EosTransactionHistoryStatus,
-  EosRawTransaction,
+  EosTxResult,
 } from './models'
-// import { ChainState } from '../../interfaces/chainState'
 
 import { mapChainError } from './eosErrors'
 import {
@@ -559,14 +557,5 @@ export class EosChainState implements Interfaces.ChainState {
       api: this._api,
       jsonRpc: this.rpc,
     }
-  }
-
-  public async isTransactionExpired(transaction: EosRawTransaction): Promise<boolean> {
-    const { head_block_time: headBlockTime } = await this.getChainInfo()
-    const { expiration } = await this.api.deserializeTransactionWithActions(transaction)
-    const headBlockTimestamp = new Date(headBlockTime).getTime()
-    const expirationTimestamp = new Date(expiration).getTime()
-    if (headBlockTimestamp < expirationTimestamp) return false
-    return true
   }
 }
