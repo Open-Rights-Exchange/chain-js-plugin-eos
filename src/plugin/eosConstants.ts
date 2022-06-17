@@ -1,3 +1,5 @@
+import { Models } from '@open-rights-exchange/chain-js'
+
 // sign transaction default parameters
 export const DEFAULT_TRANSACTION_EXPIRY_IN_SECONDS = 300 // 5 minutes
 export const DEFAULT_TRANSACTION_BLOCKS_BEHIND_REF_BLOCK = 3
@@ -26,3 +28,14 @@ export const NATIVE_CHAIN_TOKEN_ADDRESS = 'eosio.token'
 
 /** The number of decimal places for the EOS token  */
 export const NATIVE_CHAIN_TOKEN_PRECISION = 4
+
+/** The number of seconds in the future a transaction can be valid for */
+export const EOS_MAX_TRANSACTION_LIFESPAN_SECONDS = 3600
+
+/** Transaction expiration constraints */
+export const EOS_TRANSACTION_EXPIRATION_OPTIONS: Models.TransactionExpirationOptions = {
+  /** Type of expiration constraint */
+  transactionsExpirationType: Models.TransactionExpirationType.Deadline,
+  /** the maximum number of seconds that a transaction can valid for from current time */
+  maxFutureSeconds: EOS_MAX_TRANSACTION_LIFESPAN_SECONDS,
+}

@@ -1,4 +1,3 @@
-// Note that the only reason this tsconfig file exist is here is so that VSCode has visability into your local chain-js 
 {
   "extends": "./tsconfig-base.json",
   "compilerOptions": {

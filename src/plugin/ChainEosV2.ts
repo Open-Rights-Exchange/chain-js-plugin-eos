@@ -25,7 +25,12 @@ import {
   ChainJsPluginOptions,
   throwNewError,
 } from '@open-rights-exchange/chain-js'
-import { NATIVE_CHAIN_TOKEN_ADDRESS, NATIVE_CHAIN_TOKEN_PRECISION, NATIVE_CHAIN_TOKEN_SYMBOL } from './eosConstants'
+import {
+  EOS_TRANSACTION_EXPIRATION_OPTIONS,
+  NATIVE_CHAIN_TOKEN_ADDRESS,
+  NATIVE_CHAIN_TOKEN_PRECISION,
+  NATIVE_CHAIN_TOKEN_SYMBOL,
+} from './eosConstants'
 // import { Chain } from '../../interfaces'
 // import { ChainError, throwNewError } from '../../errors'
 import * as eoscrypto from './eosCrypto'
@@ -117,6 +122,11 @@ class Plugin implements Chain {
       tokenAddress: toEosEntityName(NATIVE_CHAIN_TOKEN_ADDRESS),
       precision: NATIVE_CHAIN_TOKEN_PRECISION,
     }
+  }
+
+  /** Returns the supported expiration option metadata */
+  public get transactionExpirationOptions(): Models.TransactionExpirationOptions {
+    return EOS_TRANSACTION_EXPIRATION_OPTIONS
   }
 
   /** Get the token balance for an account from the chain
@@ -296,6 +306,9 @@ class Plugin implements Chain {
 
   /** Whether chain supports ability to get a publicKey from a signature */
   supportsGetPublicKeyFromSignature = true
+
+  /** Whether the chain supports resources */
+  supportsResources = true
 
   /** Verify that a 'personal message' was signed using the given key (Eos does not append additional fields for a message) */
   verifySignedMessage = eoscrypto.verifySignedMessage

@@ -5,17 +5,16 @@ import nodeFetch, { Headers as NodeFetchHeaders } from 'node-fetch' // node only
 
 import { Helpers, Models, ChainError, Interfaces, Errors } from '@open-rights-exchange/chain-js'
 import {
-  EosSignature,
+  EosChainEndpoint,
+  EosChainSettings,
   EosEntityName,
   EOSGetTableRowsParams,
-  EosChainSettings,
-  EosTxResult,
-  EosChainEndpoint,
+  EosSignature,
   EosSymbol,
   EosTransactionHistory,
   EosTransactionHistoryStatus,
+  EosTxResult,
 } from './models'
-// import { ChainState } from '../../interfaces/chainState'
 
 import { mapChainError } from './eosErrors'
 import {

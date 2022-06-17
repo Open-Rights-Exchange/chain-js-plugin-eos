@@ -5,7 +5,7 @@
 // import { ConfirmType } from '../../../models'
 // import { Chain, ChainFactory, ChainType, CreateAccount, Crypto, Models } from '../../../index'
 // import { AesCrypto } from '../../../crypto'
-import { Helpers, Models, Crypto, Chain, ChainFactory, ChainType } from '@open-rights-exchange/chain-js'
+import { Helpers, Models, Crypto, Chain, ChainType, PluginChainFactory } from '@open-rights-exchange/chain-js'
 import {
   EosPrivateKey,
   EosNewAccountType,
@@ -244,13 +244,13 @@ async function run() {
   // then from the command line inside this directory, run using ... npx ts-node --files ./thisfilename.ts
 
   // Create an EOS chain and call a few functions
-  const kylin = new ChainFactory().create(ChainType.EosV2, kylinEndpoints, chainSettings)
+  const kylin = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, kylinEndpoints, chainSettings)
   await kylin.connect()
 
-  const eosMain = new ChainFactory().create(ChainType.EosV2, eosMainEndpoints, chainSettings)
+  const eosMain = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, eosMainEndpoints, chainSettings)
   await eosMain.connect()
 
-  const oreStaging = new ChainFactory().create(ChainType.EosV2, oreStagingEndpoints, chainSettings)
+  const oreStaging = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, oreStagingEndpoints, chainSettings)
   await oreStaging.connect()
 
   // -------------------- Create Account -----------------------

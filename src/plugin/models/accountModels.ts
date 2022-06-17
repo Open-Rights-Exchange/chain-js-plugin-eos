@@ -1,3 +1,4 @@
+import { Models } from '@open-rights-exchange/chain-js'
 import { EosEntityName, EosAsset, EosNewKeysOptions, EosMultisigCreateAccountOptions } from './generalModels'
 import { EosPublicKey } from './cryptoModels'
 import { EosAuthorizationStruct } from './eosStructures'
@@ -22,6 +23,16 @@ export type EosPublicKeys = {
 export type EosCreateAccountAuthorizations = {
   owner?: EosAuthorizationStruct
   active?: EosAuthorizationStruct
+}
+
+export type EosAccountResources = {
+  estimationType: Models.ResourceEstimationType
+  cpuMicrosecondsAvailable: number
+  netBytesAvailable: number
+  ramBytesAvailable: number
+  cpuPercentAvailable: number
+  netPercentAvailable: number
+  ramPercentAvailable: number
 }
 
 export type EosCreateAccountOptions = {
