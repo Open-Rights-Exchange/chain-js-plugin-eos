@@ -304,6 +304,9 @@ class Plugin implements Chain {
   /** Signs data as a message using private key (Eos does not append additional fields for a message) */
   signMessage = eoscrypto.signMessage
 
+  /** Whether the chain supports resources */
+  supportsFee = false
+
   /** Whether chain supports ability to get a publicKey from a signature */
   supportsGetPublicKeyFromSignature = true
 

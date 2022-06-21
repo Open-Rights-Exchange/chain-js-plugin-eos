@@ -632,10 +632,6 @@ export class EosTransaction implements Interfaces.Transaction {
     return false
   }
 
-  public get supportsFee() {
-    return false
-  }
-
   /** EOS requires chain resources for a transaction */
   public get supportsResources(): boolean {
     return true
