@@ -35,7 +35,7 @@ export const EOS_MAX_TRANSACTION_LIFESPAN_SECONDS = 3600
 /** Transaction expiration constraints */
 export const EOS_TRANSACTION_EXPIRATION_OPTIONS: Models.TransactionExpirationOptions = {
   /** Type of expiration constraint */
-  transactionsExpirationType: Models.TransactionExpirationType.Deadline,
+  transactionExpirationType: Models.TransactionExpirationType.Deadline,
   /** the maximum number of seconds that a transaction can valid for from current time */
   maxFutureSeconds: EOS_MAX_TRANSACTION_LIFESPAN_SECONDS,
 }
