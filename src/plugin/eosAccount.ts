@@ -66,7 +66,7 @@ export class EosAccount implements Interfaces.Account {
   /** account resources available */
   get resources(): EosAccountResources {
     return {
-      estimationType: Models.ResourceEstimationType.Exact,
+      estimationType: Models.ResourceEstimationType.Estimate,
       cpuMicrosecondsAvailable: this._account.cpu_limit?.available,
       netBytesAvailable: this._account.net_limit?.available,
       ramBytesAvailable: this._account.ram_quota - this._account.ram_usage,
