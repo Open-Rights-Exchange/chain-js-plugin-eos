@@ -31,6 +31,18 @@ export const composeAction = ({
   stakeCpuQuantity,
   transfer,
 }: CreateAccountNativeParams): EosActionStruct[] => {
+  const ownerOrderedAuth = {
+    ...authOwner,
+    accounts: authOwner.accounts?.sort((left, right) =>
+      left?.permission?.actor?.toLowerCase().localeCompare(right.permission?.actor?.toLowerCase()),
+    ),
+  }
+  const activeOrderedAuth = {
+    ...authActive,
+    accounts: authActive.accounts?.sort((left, right) =>
+      left?.permission?.actor?.toLowerCase().localeCompare(right.permission?.actor?.toLowerCase()),
+    ),
+  }
   const actions: EosActionStruct[] = [
     {
       account: toEosEntityName('eosio'),
@@ -44,8 +56,8 @@ export const composeAction = ({
       data: {
         creator: creatorAccountName,
         name: accountName,
-        owner: authOwner,
-        active: authActive,
+        owner: ownerOrderedAuth,
+        active: activeOrderedAuth,
       },
     },
     {
