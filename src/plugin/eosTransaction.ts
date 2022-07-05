@@ -639,10 +639,13 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** Chain resources required for Transaction */
   public async resourcesRequired(): Promise<EosTransactionResources> {
-    // TODO: to be implemented
-    // estimationType: ResourceEstimationType.Estimate,
-    Helpers.notImplemented()
-    return null
+    const netBytes = this._raw.length + 45
+    return {
+      estimationType: Models.ResourceEstimationType.Estimate,
+      netBytes,
+      cpuMicroseconds: null,
+      ramBytes: null,
+    }
   }
 
   public async setDesiredFee(): Promise<any> {
