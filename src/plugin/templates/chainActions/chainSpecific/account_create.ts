@@ -31,6 +31,8 @@ export const composeAction = ({
   stakeCpuQuantity,
   transfer,
 }: CreateAccountNativeParams): EosActionStruct[] => {
+  // Owner and Active authorizations are passed as parameters into EOS system contract's newaccount action
+  // Ordering account's array under authorization alphabetically by accountName is required by the system contract.
   const ownerOrderedAuth = {
     ...authOwner,
     accounts: authOwner.accounts?.sort((left, right) =>
