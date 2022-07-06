@@ -92,8 +92,9 @@ export function toEosAsset(amount: string, symbol: string, precision?: number): 
 
 /** Construct a valid EOS Symbol - e.g. 'EOS' */
 export function toEosSymbol(symbol: string = ''): EosSymbol {
-  if (isValidEosSymbol(symbol)) {
-    return symbol
+  const eosSymbol = symbol.toUpperCase()
+  if (isValidEosSymbol(eosSymbol)) {
+    return eosSymbol
   }
   throw new Error('Symbol must be between 1 and 7 upper-case letters')
 }
