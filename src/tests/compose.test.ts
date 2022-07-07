@@ -1,13 +1,8 @@
 // How to use fetch mocks - https://www.npmjs.com/package/jest-fetch-mock
-import { composeAction } from '../eosCompose'
-import { Models } from '@open-rights-exchange/chainjs'
+import { Models } from '@open-rights-exchange/chain-js'
+import { composeAction } from '../plugin/eosCompose'
+import { EosChainActionType } from '../plugin/models'
 import {
-  composedCreate,
-  composedDeleteAuth,
-  composedLinkAuth,
-  composedUnlinkAuth,
-  composedUpdateAuth,
-  composedCreateEscrowCreate,
   composedCreateEscrowDefine,
   composedCreateEscrowInit,
   composedCreateEscrowReclaim,
@@ -22,106 +17,9 @@ import {
   composedOreCreateAccount,
   composedOreUpsertRight,
 } from './mockups/composedActions'
-import { EosChainActionType } from '../models'
 
 describe('Compose Chain Actions', () => {
   // sets fetchMock to throw an error on the next call to fetch (jsonRpc.get_abi calls fetch and triggers the error to be thrown)
-
-  it('creates createAccount action object', async () => {
-    const args = {
-      accountName: 'accountname',
-      creatorAccountName: 'creatoracc',
-      creatorPermission: 'active',
-      publicKeyActive: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma',
-      publicKeyOwner: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma',
-      ramBytes: 3072,
-      stakeNetQuantity: '1.0000 EOS',
-      stakeCpuQuantity: '1.0000 EOS',
-      transfer: false,
-    }
-    const actAction = await composeAction(Models.ChainActionType.AccountCreate, args)
-    expect(actAction).toEqual(composedCreate)
-  })
-
-  it('creates deleteAuth action object', async () => {
-    const args = {
-      account: 'accountname',
-      authAccount: 'authaccount',
-      authPermission: 'active',
-      permission: 'permission',
-    }
-    const actAction = await composeAction(Models.ChainActionType.AccountDeleteAuth, args)
-    expect(actAction).toEqual(composedDeleteAuth)
-  })
-
-  it('creates linkAuth action object', async () => {
-    const args = {
-      action: 'linkauth',
-      authAccount: 'accountname',
-      authPermission: 'active',
-      contract: 'contract',
-      permission: 'permission',
-    }
-    const actAction = await composeAction(Models.ChainActionType.AccountLinkAuth, args)
-    expect(actAction).toEqual(composedLinkAuth)
-  })
-
-  it('creates unlinkAuth action object', async () => {
-    const args = {
-      action: 'unlinkauth',
-      authAccount: 'accountname',
-      authPermission: 'active',
-      contract: 'contract',
-    }
-    const actAction = await composeAction(Models.ChainActionType.AccountUnlinkAuth, args)
-    expect(actAction).toEqual(composedUnlinkAuth)
-  })
-
-  it('creates updateAuth action object', async () => {
-    const args = {
-      auth: {
-        threshold: 1,
-        accounts: [
-          {
-            permission: {
-              actor: 'accountname',
-              permission: 'owner',
-            },
-            weight: 1,
-          },
-        ],
-        keys: [{ key: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma', weight: 1 }],
-        waits: [
-          {
-            wait_sec: 1,
-            weight: 1,
-          },
-        ],
-      },
-      authAccount: 'accountname',
-      authPermission: 'active',
-      parent: 'parent',
-      permission: 'permission',
-    }
-    const actAction = await composeAction(Models.ChainActionType.AccountUpdateAuth, args)
-    expect(actAction).toEqual(composedUpdateAuth)
-  })
-
-  it('creates createEscrow create action object', async () => {
-    const args = {
-      accountName: 'accountname',
-      contractName: 'createescrow',
-      appName: 'app',
-      creatorAccountName: 'creator',
-      creatorPermission: 'active',
-      publicKeyActive: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma',
-      publicKeyOwner: 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma',
-      pricekey: '1',
-      referralAccountName: 'referral',
-    }
-    const actAction = await composeAction(EosChainActionType.CreateEscrowCreate, args)
-    expect(actAction).toEqual(composedCreateEscrowCreate)
-  })
 
   it('creates createEscrow define action object', async () => {
     const args = {
