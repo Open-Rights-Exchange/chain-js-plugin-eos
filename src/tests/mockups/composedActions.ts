@@ -1,31 +1,5 @@
 import { toEosEntityName } from '../../plugin/helpers'
 
-export const composedCreateEscrowDefine = {
-  account: toEosEntityName('createescrow'),
-  name: toEosEntityName('define'),
-  authorization: [
-    {
-      actor: toEosEntityName('accountname'),
-      permission: toEosEntityName('active'),
-    },
-  ],
-  data: {
-    owner: toEosEntityName('accountname'),
-    dapp: 'app',
-    ram_bytes: '0',
-    net: '1.0000 EOS',
-    cpu: '1.0000 EOS',
-    pricekey: '1',
-    airdrop: {
-      contract: toEosEntityName('airdroper'),
-      tokens: '0.0000 AIR',
-      limit: '0.0000 AIR',
-    },
-    rex: {},
-    use_rex: false,
-  },
-}
-
 export const composedCreateEscrowInit = {
   account: toEosEntityName('createescrow'),
   name: toEosEntityName('init'),

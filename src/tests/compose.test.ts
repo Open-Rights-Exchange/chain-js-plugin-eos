@@ -3,7 +3,6 @@ import { Models } from '@open-rights-exchange/chain-js'
 import { composeAction } from '../plugin/eosCompose'
 import { EosChainActionType } from '../plugin/models'
 import {
-  composedCreateEscrowDefine,
   composedCreateEscrowInit,
   composedCreateEscrowReclaim,
   composedCreateEscrowTransfer,
@@ -20,28 +19,6 @@ import {
 
 describe('Compose Chain Actions', () => {
   // sets fetchMock to throw an error on the next call to fetch (jsonRpc.get_abi calls fetch and triggers the error to be thrown)
-
-  it('creates createEscrow define action object', async () => {
-    const args = {
-      accountName: 'accountname',
-      airdrop: {
-        contract: 'airdroper',
-        tokens: '0.0000 AIR',
-        limit: '0.0000 AIR',
-      },
-      appName: 'app',
-      contractName: 'createescrow',
-      cpu: '1.0000 EOS',
-      permission: 'active',
-      net: '1.0000 EOS',
-      pricekey: '1',
-      ram: '0',
-      rex: {},
-      useRex: false,
-    }
-    const actAction = await composeAction(EosChainActionType.CreateEscrowDefine, args)
-    expect(actAction).toEqual(composedCreateEscrowDefine)
-  })
 
   it('creates createEscrow init action object', async () => {
     const args = {

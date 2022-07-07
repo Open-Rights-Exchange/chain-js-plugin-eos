@@ -1,6 +1,5 @@
 import { decomposeAction } from '../plugin/eosDecompose'
 import {
-  composedCreateEscrowDefine,
   composedCreateEscrowInit,
   composedCreateEscrowReclaim,
   composedCreateEscrowTransfer,
@@ -16,35 +15,6 @@ import {
 } from './mockups/composedActions'
 
 describe('Decompose Chain Actions', () => {
-  it('decomposes createEscrow define action object', async () => {
-    const expAction = [
-      {
-        chainActionType: 'CreateEscrowDefine',
-        args: {
-          accountName: 'accountname',
-          airdrop: {
-            contract: 'airdroper',
-            tokens: '0.0000 AIR',
-            limit: '0.0000 AIR',
-          },
-          appName: 'app',
-          contractName: 'createescrow',
-          cpu: '1.0000 EOS',
-          permission: 'active',
-          net: '1.0000 EOS',
-          pricekey: '1',
-          ram: '0',
-          rex: {},
-          useRex: false,
-        },
-        partial: false,
-      },
-    ]
-    const actAction = await decomposeAction(composedCreateEscrowDefine)
-
-    expect(actAction).toEqual(expAction)
-  })
-
   it('decomposes createEscrow init action object', async () => {
     const expAction = [
       {
