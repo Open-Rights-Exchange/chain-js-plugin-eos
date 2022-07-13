@@ -50,13 +50,13 @@ const getDefaultArgs = () => ({
   transfer: false,
 })
 
-test('Compose a action object', () => {
+test('Compose AccountCreate object', () => {
   const args: any = getDefaultArgs()
   const actAction = composeAction(args)
   expect(actAction).toEqual(getComposedAction())
 })
 
-test('Decomposes action object', () => {
+test('Decomposes AccountCreate object', () => {
   const expAction = {
     chainActionType: 'AccountCreate',
     args: {

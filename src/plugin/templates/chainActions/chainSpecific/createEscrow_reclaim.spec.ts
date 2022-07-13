@@ -1,9 +1,9 @@
 import { toEosEntityName } from '../../../helpers'
-import { composeAction, decomposeAction } from './account_unlinkAuth'
+import { composeAction, decomposeAction } from './createEscrow_reclaim'
 
 const getComposedAction = () => ({
-  account: toEosEntityName('eosio'),
-  name: toEosEntityName('unlinkauth'),
+  account: toEosEntityName('createescrow'),
+  name: toEosEntityName('reclaim'),
   authorization: [
     {
       actor: toEosEntityName('accountname'),
@@ -11,33 +11,35 @@ const getComposedAction = () => ({
     },
   ],
   data: {
-    account: toEosEntityName('accountname'),
-    code: toEosEntityName('contract'),
-    type: toEosEntityName('unlinkauth'),
+    reclaimer: toEosEntityName('accountname'),
+    dapp: 'app',
+    sym: 'EOS,4',
   },
 })
 
 const getDefaultArgs = () => ({
-  action: 'unlinkauth',
-  authAccount: 'accountname',
-  authPermission: 'active',
-  contract: 'contract',
+  accountName: 'accountname',
+  appName: 'app',
+  contractName: 'createescrow',
+  permission: 'active',
+  symbol: 'EOS,4',
 })
 
-test('Compose AccountUnlinkAuth object', () => {
+test('Compose CreateEscrowReclaim object', () => {
   const args: any = getDefaultArgs()
   const actAction = composeAction(args)
   expect(actAction).toEqual(getComposedAction())
 })
 
-test('Decomposes AccountUnlinkAuth object', () => {
+test('Decomposes CreateEscrowReclaim object', () => {
   const expAction = {
-    chainActionType: 'AccountUnlinkAuth',
+    chainActionType: 'CreateEscrowReclaim',
     args: {
-      action: 'unlinkauth',
-      authAccount: 'accountname',
-      authPermission: 'active',
-      contract: 'contract',
+      accountName: 'accountname',
+      appName: 'app',
+      contractName: 'createescrow',
+      permission: 'active',
+      symbol: 'EOS,4',
     },
     partial: false,
   }
@@ -45,7 +47,7 @@ test('Decomposes AccountUnlinkAuth object', () => {
   expect(actAction).toEqual(expAction)
 })
 
-test('Compose and Decompose AccountUnlinkAuth', () => {
+test('Compose and Decompose CreateEscrowReclaim', () => {
   const action = composeAction(getDefaultArgs() as any)
   const decomposed = decomposeAction(action)
 

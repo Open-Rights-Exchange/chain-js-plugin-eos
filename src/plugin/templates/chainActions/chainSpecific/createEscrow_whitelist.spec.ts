@@ -1,9 +1,9 @@
 import { toEosEntityName } from '../../../helpers'
-import { composeAction, decomposeAction } from './createEscrow_define'
+import { composeAction, decomposeAction } from './createEscrow_whitelist'
 
 const getComposedAction = () => ({
   account: toEosEntityName('createescrow'),
-  name: toEosEntityName('define'),
+  name: toEosEntityName('whitelist'),
   authorization: [
     {
       actor: toEosEntityName('accountname'),
@@ -12,64 +12,34 @@ const getComposedAction = () => ({
   ],
   data: {
     owner: toEosEntityName('accountname'),
+    account: toEosEntityName('whitelisted'),
     dapp: 'app',
-    ram_bytes: '0',
-    net: '1.0000 EOS',
-    cpu: '1.0000 EOS',
-    pricekey: '1',
-    airdrop: {
-      contract: toEosEntityName('airdroper'),
-      tokens: '0.0000 AIR',
-      limit: '0.0000 AIR',
-    },
-    rex: {},
-    use_rex: false,
   },
 })
 
 const getDefaultArgs = () => ({
   accountName: 'accountname',
-  airdrop: {
-    contract: 'airdroper',
-    tokens: '0.0000 AIR',
-    limit: '0.0000 AIR',
-  },
   appName: 'app',
   contractName: 'createescrow',
-  cpu: '1.0000 EOS',
   permission: 'active',
-  net: '1.0000 EOS',
-  pricekey: '1',
-  ram: '0',
-  rex: {},
-  useRex: false,
+  whitelistAccount: 'whitelisted',
 })
 
-test('Compose CreateEscrowDefine object', () => {
+test('Compose CreateEscrowWhitelist object', () => {
   const args: any = getDefaultArgs()
   const actAction = composeAction(args)
   expect(actAction).toEqual(getComposedAction())
 })
 
-test('Decomposes CreateEscrowDefine object', () => {
+test('Decomposes CreateEscrowWhitelist object', () => {
   const expAction = {
-    chainActionType: 'CreateEscrowDefine',
+    chainActionType: 'CreateEscrowWhitelist',
     args: {
       accountName: 'accountname',
-      airdrop: {
-        contract: 'airdroper',
-        tokens: '0.0000 AIR',
-        limit: '0.0000 AIR',
-      },
       appName: 'app',
       contractName: 'createescrow',
-      cpu: '1.0000 EOS',
       permission: 'active',
-      net: '1.0000 EOS',
-      pricekey: '1',
-      ram: '0',
-      rex: {},
-      useRex: false,
+      whitelistAccount: 'whitelisted',
     },
     partial: false,
   }
@@ -77,7 +47,7 @@ test('Decomposes CreateEscrowDefine object', () => {
   expect(actAction).toEqual(expAction)
 })
 
-test('Compose and Decompose CreateEscrowDefine', () => {
+test('Compose and Decompose CreateEscrowWhitelist', () => {
   const action = composeAction(getDefaultArgs() as any)
   const decomposed = decomposeAction(action)
 

@@ -26,13 +26,13 @@ const getDefaultArgs = () => ({
   permission: 'permission',
 })
 
-test('Compose a action object', () => {
+test('Compose AccountLinkAuth object', () => {
   const args: any = getDefaultArgs()
   const actAction = composeAction(args)
   expect(actAction).toEqual(getComposedAction())
 })
 
-test('Decomposes action object', () => {
+test('Decomposes AccountLinkAuth object', () => {
   const expAction = {
     chainActionType: 'AccountLinkAuth',
     args: {
@@ -48,7 +48,7 @@ test('Decomposes action object', () => {
   expect(actAction).toEqual(expAction)
 })
 
-test('Compose and Decompose', () => {
+test('Compose and Decompose AccountLinkAuth', () => {
   const action = composeAction(getDefaultArgs() as any)
   const decomposed = decomposeAction(action)
 

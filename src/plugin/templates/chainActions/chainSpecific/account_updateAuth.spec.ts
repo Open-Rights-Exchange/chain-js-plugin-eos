@@ -62,13 +62,13 @@ const getDefaultArgs = () => ({
   permission: 'permission',
 })
 
-test('Compose a action object', () => {
+test('Compose AccountUpdateAuth object', () => {
   const args: any = getDefaultArgs()
   const actAction = composeAction(args)
   expect(actAction).toEqual(getComposedAction())
 })
 
-test('Decomposes action object', () => {
+test('Decomposes AccountUpdateAuth object', () => {
   const expAction = {
     chainActionType: 'AccountUpdateAuth',
     args: {
@@ -102,7 +102,7 @@ test('Decomposes action object', () => {
   expect(actAction).toEqual(expAction)
 })
 
-test('Compose and Decompose', () => {
+test('Compose and Decompose AccountUpdateAuth', () => {
   const action = composeAction(getDefaultArgs() as any)
   const decomposed = decomposeAction(action)
 
