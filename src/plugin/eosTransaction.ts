@@ -588,7 +588,7 @@ export class EosTransaction implements Interfaces.Transaction {
     const signedTransaction = { serializedTransaction: this._raw, signatures: this.signatures }
     this._sendReceipt = await this._chainState.sendTransaction(signedTransaction, waitForConfirm, communicationSettings)
     this.setTransactionId(this._sendReceipt)
-    this.setActualCost(this._sendReceipt)
+    this.setActualCost()
     return this._sendReceipt
   }
 
@@ -664,8 +664,8 @@ export class EosTransaction implements Interfaces.Transaction {
     Helpers.notImplemented()
   }
 
-  private setActualCost(executionReceipt: any) {
-    const { chainResponse } = executionReceipt
+  private setActualCost() {
+    const { chainResponse } = this._sendReceipt
     const { action_traces: actionTraces, receipt, net_usage: netUsage } = chainResponse.processed
     const cpuUsage = receipt?.cpu_usage_us
     let ramDelta = 0
