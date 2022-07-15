@@ -659,11 +659,6 @@ export class EosTransaction implements Interfaces.Transaction {
     Helpers.notSupported('getSuggestedFee')
   }
 
-  // TODO: to be implemented
-  public async getActualCost(): Promise<any> {
-    Helpers.notImplemented()
-  }
-
   private setActualCost() {
     const { chainResponse } = this._sendReceipt
     const { action_traces: actionTraces, receipt, net_usage: netUsage } = chainResponse.processed
