@@ -48,6 +48,8 @@ export class EosTransaction implements Interfaces.Transaction {
 
   private _transactionId: string
 
+  private _actualCost: Models.ActualCost
+
   constructor(chainState: EosChainState, options?: EosTransactionOptions) {
     this._chainState = chainState
     let { blocksBehind, expireSeconds } = options || {}
@@ -584,8 +586,9 @@ export class EosTransaction implements Interfaces.Transaction {
     this.assertIsValidated()
     this.assertHasAllRequiredSignature()
     const signedTransaction = { serializedTransaction: this._raw, signatures: this.signatures }
-    this._sendReceipt = this._chainState.sendTransaction(signedTransaction, waitForConfirm, communicationSettings)
+    this._sendReceipt = await this._chainState.sendTransaction(signedTransaction, waitForConfirm, communicationSettings)
     this.setTransactionId(this._sendReceipt)
+    this.setActualCost(this._sendReceipt)
     return this._sendReceipt
   }
 
@@ -659,6 +662,29 @@ export class EosTransaction implements Interfaces.Transaction {
   // TODO: to be implemented
   public async getActualCost(): Promise<any> {
     Helpers.notImplemented()
+  }
+
+  private setActualCost(executionReceipt: any) {
+    const { chainResponse } = executionReceipt
+    const { action_traces: actionTraces, receipt, net_usage: netUsage } = chainResponse.processed
+    const cpuUsage = receipt?.cpu_usage_us
+    let ramDelta = 0
+    actionTraces.forEach((trace: any) => {
+      trace?.account_ram_deltas?.forEach((accountDelta: any) => {
+        if (accountDelta?.delta) ramDelta += accountDelta.delta
+      })
+    })
+    this._actualCost = {
+      resources: {
+        netUsage,
+        cpuUsage,
+        ramDelta,
+      },
+    }
+  }
+
+  public get actualCost(): Models.ActualCost {
+    return this._actualCost
   }
 
   // ------------------------ EOS Specific functionality -------------------------------
