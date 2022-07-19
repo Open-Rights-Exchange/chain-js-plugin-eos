@@ -182,9 +182,10 @@ function encryptAccountPrivateKeysIfNeeded(
  *  Returns: { publicKeys:{owner, active}, privateKeys:{owner, active}, privateKeysEncrypted:{owner, active} } */
 export async function generateNewAccountKeysAndEncryptPrivateKeys(
   password: string,
-  overrideKeys: any = {},
+  overrideKeys: any,
   encryptionOptions: Crypto.AesCrypto.AesEncryptionOptions,
 ): Promise<EosAccountKeys> {
+  overrideKeys = overrideKeys || {}
   // remove any empty values passed-in (e.g. active=undefined or '' )
   Helpers.removeEmptyValuesInJsonObject(overrideKeys)
 

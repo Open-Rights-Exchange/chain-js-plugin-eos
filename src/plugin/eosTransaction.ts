@@ -481,8 +481,8 @@ export class EosTransaction implements Interfaces.Transaction {
     const uniqueRequiredAuths = await this.addAuthToPermissions(requiredAuthsArray)
     // Attach subAuth for each accountName/permission specified as Authorization.
     const uniqueRequiredAuthsWithSubAuthPromises = uniqueRequiredAuths?.map(async uAuth => {
-      const { accounts } = uAuth?.requiredAuthorization
-      const accountsToGetSubAuths = accounts.filter(
+      const { accounts } = uAuth?.requiredAuthorization || {}
+      const accountsToGetSubAuths = accounts?.filter(
         account => account.permission.permission !== Helpers.toChainEntityName('eosio.code'),
       )
       if (accountsToGetSubAuths?.length > 0) {

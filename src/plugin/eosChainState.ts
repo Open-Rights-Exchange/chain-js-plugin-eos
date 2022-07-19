@@ -164,6 +164,7 @@ export class EosChainState implements Interfaces.ChainState {
       return { url: '', endpoint: null }
     }
     // Just choose the first endpoint for now
+    // eslint-disable-next-line prefer-destructuring
     const selectedEndpoint = this.endpoints[0]
     const endpointUrl = new URL(selectedEndpoint.url)
     return { url: Helpers.trimTrailingChars(endpointUrl?.href, '/'), endpoint: selectedEndpoint }
