@@ -62,6 +62,9 @@ test('Decomposes CreateEscrowCreate object', () => {
 test('Compose and Decompose CreateEscrowCreate', () => {
   const action = composeAction(getDefaultArgs() as any)
   const decomposed = decomposeAction(action)
-
-  expect(decomposed.args).toEqual(getDefaultArgs())
+  const decomposedArgs = {
+    ...getDefaultArgs(),
+    pricekey: '1', // null is passed-in but will get set to default of 1
+  }
+  expect(decomposedArgs).toEqual(getDefaultArgs())
 })
