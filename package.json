@@ -78,7 +78,7 @@
     "@open-rights-exchange/chain-js": "^4.7.0"
   },
   "peerDependencies": {
-    "@open-rights-exchange/chain-js": "^4.7.0"
+    "@open-rights-exchange/chain-js": "^4.8.0"
   },
   "files": [
     "dist",
