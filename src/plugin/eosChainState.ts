@@ -527,7 +527,7 @@ export class EosChainState implements Interfaces.ChainState {
 
   /** Return transaction from chain by TxId
    * IMPORTANT: This requires that the chain endpoint is running the depricated history plugin - likley to fail */
-  async getTransactionHistoryById(id: string, blockHint: number): Promise<EosTransactionHistory> {
+  async getTransactionHistoryById(id: string, blockHint?: number): Promise<EosTransactionHistory> {
     const transaction = await this.eosjs.jsonRpc.history_get_transaction(id, blockHint)
     return transaction
   }
