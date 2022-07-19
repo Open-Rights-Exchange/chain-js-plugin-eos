@@ -30,12 +30,13 @@ export const NATIVE_CHAIN_TOKEN_ADDRESS = 'eosio.token'
 export const NATIVE_CHAIN_TOKEN_PRECISION = 4
 
 /** The number of seconds in the future a transaction can be valid for */
-export const EOS_MAX_TRANSACTION_LIFESPAN_SECONDS = 3600
+export const EOS_MAX_TRANSACTION_LIFESPAN_SECONDS = 3600 // comes from EOSIO node config.ini max-transaction-time (in milliseconds)
 
 /** Transaction expiration constraints */
 export const EOS_TRANSACTION_EXPIRATION_OPTIONS: Models.TransactionExpirationOptions = {
   /** Type of expiration constraint */
   transactionExpirationType: Models.TransactionExpirationType.Deadline,
   /** the maximum number of seconds that a transaction can valid for from current time */
+  // maxWindowSeconds: EOS_MAX_TRANSACTION_LIFESPAN_SECONDS, // was deferred_trx_expiration_window - Depricated in EOS 2.0
   maxFutureSeconds: EOS_MAX_TRANSACTION_LIFESPAN_SECONDS,
 }
