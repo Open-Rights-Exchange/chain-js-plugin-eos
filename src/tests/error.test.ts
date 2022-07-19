@@ -1,8 +1,8 @@
 /* eslint-disable jest/no-conditional-expect */
 // How to use fetch mocks - https://www.npmjs.com/package/jest-fetch-mock
 import { JsonRpc, RpcError } from 'eosjs'
-import { mapChainError } from '../eosErrors'
-import { ChainErrorType } from '../../../models'
+import { mapChainError } from '../plugin/eosErrors'
+import { Models } from '@open-rights-exchange/chain-js'
 
 describe('Error mapping', () => {
   const endpoint = 'http://localhost'
@@ -17,7 +17,7 @@ describe('Error mapping', () => {
   // sets fetchMock to throw an error on the next call to fetch (jsonRpc.get_abi calls fetch and triggers the error to be thrown)
   it('maps a TxExceededResources error', async () => {
     let actErrorType = null
-    const expErrorType = ChainErrorType.TxExceededResources
+    const expErrorType = Models.ChainErrorType.TxExceededResources
 
     const expReturn = {
       message: 'Internal Service Error',
@@ -39,7 +39,6 @@ describe('Error mapping', () => {
     try {
       await jsonRpc.get_abi('placeholder')
     } catch (e) {
-      // eslint-disable-next-line jest/no-try-expect
       expect(e).toBeInstanceOf(RpcError)
       const mappedError = mapChainError(e)
       actErrorType = mappedError.errorType
@@ -51,7 +50,7 @@ describe('Error mapping', () => {
   // sets fetchMock to throw an error on the next call to fetch (jsonRpc.get_abi calls fetch and triggers the error to be thrown)
   it('maps a account does not exist error', async () => {
     let actErrorType = null
-    const expErrorType = ChainErrorType.AccountDoesntExist
+    const expErrorType = Models.ChainErrorType.AccountDoesntExist
 
     const expReturn = {
       message: 'assertion failure with message: to account does not exist',
@@ -73,7 +72,6 @@ describe('Error mapping', () => {
     try {
       await jsonRpc.get_abi('placeholder')
     } catch (e) {
-      // eslint-disable-next-line jest/no-try-expect
       expect(e).toBeInstanceOf(RpcError)
       const mappedError = mapChainError(e)
       actErrorType = mappedError.errorType
