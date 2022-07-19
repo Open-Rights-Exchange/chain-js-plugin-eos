@@ -94,7 +94,7 @@ test('Decomposes AccountUpdateAuth object', () => {
       authAccount: 'accountname',
       authPermission: 'active',
       parent: 'parent',
-      permission: 'active',
+      permission: 'permission',
     },
     partial: false,
   }
@@ -105,6 +105,5 @@ test('Decomposes AccountUpdateAuth object', () => {
 test('Compose and Decompose AccountUpdateAuth', () => {
   const action = composeAction(getDefaultArgs() as any)
   const decomposed = decomposeAction(action)
-
   expect(decomposed.args).toEqual(getDefaultArgs())
 })

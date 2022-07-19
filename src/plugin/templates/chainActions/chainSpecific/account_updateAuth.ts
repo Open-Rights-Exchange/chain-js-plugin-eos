@@ -46,8 +46,8 @@ export const decomposeAction = (action: EosActionStruct): EosDecomposeReturn => 
       auth: data.auth,
       authAccount: toEosEntityName(data.account),
       authPermission: toEosEntityNameOrNull(auth?.permission),
-      parent: toEosEntityName(data.parent),
-      permission: toEosEntityNameOrNull(auth?.permission),
+      parent: toEosEntityName(data?.parent),
+      permission: toEosEntityNameOrNull(data?.permission),
     }
     const partial = !returnData?.permission
     return {
