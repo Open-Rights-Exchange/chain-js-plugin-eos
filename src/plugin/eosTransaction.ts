@@ -642,10 +642,9 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** Chain resources required for Transaction */
   public async resourcesRequired(): Promise<EosTransactionResources> {
-    const netBytes = this._raw.length + 45
     return {
       estimationType: Models.ResourceEstimationType.Estimate,
-      netBytes,
+      netBytes: this.raw?.length + 45,
       cpuMicroseconds: null,
       ramBytes: null,
     }
