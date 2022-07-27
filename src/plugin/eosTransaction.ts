@@ -79,11 +79,7 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** The transaction body in raw format (by prepareForSigning) */
   get raw() {
-    if (!this.hasRaw) {
-      Errors.throwNewError(
-        'Transaction has not been prepared to be signed yet. Call prepareToBeSigned() or use setTransaction(). Use transaction.hasRaw to check before using transaction.raw',
-      )
-    }
+    this.assertHasRaw()
     return this._raw
   }
 
@@ -253,11 +249,7 @@ export class EosTransaction implements Interfaces.Transaction {
   /** Verifies that all accounts and permisison for actions exist on chain.
    *  Throws if any problems */
   public async validate(): Promise<void> {
-    if (!this.hasRaw) {
-      Errors.throwNewError(
-        'Transaction validation failure. Missing raw transaction. Use Transaction() or if setting actions, call transaction.prepareToBeSigned().',
-      )
-    }
+    this.assertHasRaw()
     // this will throw an error if an account in transaction body doesn't exist on chain
     this._requiredAuthorizations = await this.fetchAuthorizationsRequired()
     await this.assertTransactionNotExpired()
@@ -267,6 +259,15 @@ export class EosTransaction implements Interfaces.Transaction {
   // ** Whether transaction has been validated - via vaidate() */
   get isValidated() {
     return this._isValidated
+  }
+
+  /** Throws if transction doesnt have a raw value */
+  public async assertHasRaw(): Promise<void> {
+    if (!this.hasRaw) {
+      Errors.throwNewError(
+        'Transaction has not been prepared to be signed yet. Call prepareToBeSigned() or use setTransaction(). Use transaction.hasRaw to check before using transaction.raw',
+      )
+    }
   }
 
   /** Throws if not validated */
@@ -284,6 +285,7 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** Whether transaction has expired */
   public async isExpired(transaction: EosRawTransaction): Promise<boolean> {
+    this.assertHasRaw()
     const { head_block_time: headBlockTime } = await this._chainState.getChainInfo()
     const headBlockTimestamp = new Date(headBlockTime).getTime()
     const expirationDate = await this.expiresOn(transaction)
@@ -293,6 +295,7 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** Whether transaction has expired */
   public async expiresOn(transaction: EosRawTransaction): Promise<Date> {
+    this.assertHasRaw()
     const { expiration } = await this._chainState.api.deserializeTransactionWithActions(transaction)
     return new Date(expiration)
   }
