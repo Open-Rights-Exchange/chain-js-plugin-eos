@@ -285,11 +285,16 @@ export class EosTransaction implements Interfaces.Transaction {
   /** Whether transaction has expired */
   public async isExpired(transaction: EosRawTransaction): Promise<boolean> {
     const { head_block_time: headBlockTime } = await this._chainState.getChainInfo()
-    const { expiration } = await this._chainState.api.deserializeTransactionWithActions(transaction)
     const headBlockTimestamp = new Date(headBlockTime).getTime()
-    const expirationTimestamp = new Date(expiration).getTime()
-    if (headBlockTimestamp < expirationTimestamp) return false
+    const expirationDate = await this.expiresOn(transaction)
+    if (headBlockTimestamp < expirationDate.getTime()) return false
     return true
+  }
+
+  /** Whether transaction has expired */
+  public async expiresOn(transaction: EosRawTransaction): Promise<Date> {
+    const { expiration } = await this._chainState.api.deserializeTransactionWithActions(transaction)
+    return new Date(expiration)
   }
 
   // signatures
@@ -642,9 +647,10 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** Chain resources required for Transaction */
   public async resourcesRequired(): Promise<EosTransactionResources> {
+    const netBytes = this._raw.length + 45
     return {
       estimationType: Models.ResourceEstimationType.Estimate,
-      netBytes: this.raw?.length + 45,
+      netBytes,
       cpuMicroseconds: null,
       ramBytes: null,
     }
