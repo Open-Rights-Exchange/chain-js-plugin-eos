@@ -1,6 +1,6 @@
 {
   "name": "@open-rights-exchange/chain-js-plugin-eos",
-  "version": "4.8.2",
+  "version": "4.9.0",
   "description": "Chain-js plug-in for EOS networks.",
   "license": "MIT",
   "main": "dist/cjs/src/index.js",
@@ -78,7 +78,7 @@
     "prettier": "^2.6.2"
   },
   "peerDependencies": {
-    "@open-rights-exchange/chain-js": "^4.8.0"
+    "@open-rights-exchange/chain-js": "^4.9.0"
   },
   "files": [
     "dist",

@@ -278,26 +278,31 @@ export class EosTransaction implements Interfaces.Transaction {
     }
   }
 
+  /** Throws if transaction expired */
   public async assertTransactionNotExpired(): Promise<void> {
-    const hasExpired = await this.isExpired(this.raw)
+    const hasExpired = await this.isExpired()
     if (hasExpired) Errors.throwNewError('Transaction has expired')
   }
 
   /** Whether transaction has expired */
-  public async isExpired(transaction: EosRawTransaction): Promise<boolean> {
+  public async isExpired(): Promise<boolean> {
     this.assertHasRaw()
-    const { head_block_time: headBlockTime } = await this._chainState.getChainInfo()
-    const headBlockTimestamp = new Date(headBlockTime).getTime()
-    const expirationDate = await this.expiresOn(transaction)
-    if (headBlockTimestamp < expirationDate.getTime()) return false
-    return true
+    const { headBlockTime } = this._chainState.chainInfo
+    const expirationDate = await this.expiresOn()
+    return headBlockTime.getTime() > expirationDate.getTime()
+  }
+
+  /** Date (and time) when transaction can first be sent to the chain (before which the transaction will fail) */
+  public async validOn(): Promise<Date> {
+    Helpers.notSupported('Eos transactions dont have a valid from date')
+    return null // quiets linter
   }
 
   /** Whether transaction has expired */
-  public async expiresOn(transaction: EosRawTransaction): Promise<Date> {
+  public async expiresOn(): Promise<Date> {
     this.assertHasRaw()
-    const { expiration } = await this._chainState.api.deserializeTransactionWithActions(transaction)
-    return new Date(expiration)
+    const { expiration } = await this._chainState.api.deserializeTransactionWithActions(this.raw)
+    return new Date(`${expiration}Z`) // Add Z to specify GMT time
   }
 
   // signatures
