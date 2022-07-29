@@ -16,7 +16,7 @@
     "lint-fix": "eslint src --fix",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
-    "test": "jest --coverage",
+    "test": "jest --coverage --maxWorkers=1",
     "test:watch": "jest --watch",
     "localpublish": "zalc publish && zalc push",
     "build": "rm -fr dist/* && tsc -p tsconfig-mjs.json && tsc -p tsconfig-cjs.json && ./fixup",
