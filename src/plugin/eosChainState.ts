@@ -149,7 +149,7 @@ export class EosChainState implements Interfaces.ChainState {
     const { head_block_num: headBlockNumber, head_block_time: headBlockTime, server_version: version } = info
     this._chainInfo = {
       headBlockNumber,
-      headBlockTime: new Date(headBlockTime),
+      headBlockTime: new Date(`${headBlockTime}Z`), // Add Z to specify GMT time
       version,
       nativeInfo: info,
     }
