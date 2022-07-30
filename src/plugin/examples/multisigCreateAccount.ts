@@ -87,18 +87,12 @@ export const permissionNewKeysOptions = {
 async function run() {
   const jungle = PluginChainFactory([ChainEosV2], ChainType.EosV2, jungle3Endpoints, chainSettings)
   await jungle.connect()
-  console.log('Here')
   // -----> CreateAccount - create native kylin account
   const createAccount = await jungle.new.CreateAccount(createAccountOptions_EosNative)
-  console.log('Here')
   createAccount.generateKeysIfNeeded()
-  console.log('Here')
   if (createAccount.supportsTransactionToCreateAccount) {
-    console.log('Here')
     await createAccount.composeTransaction(EosNewAccountType.Native)
-    console.log('Here')
     await createAccount.transaction.sign([env.EOS_JUNGLE_OREIDFUNDING_PRIVATE_KEY])
-    console.log('Here')
     const txResponse = await createAccount.transaction.send()
     console.log('createAccount response: ', JSON.stringify(txResponse))
   }
