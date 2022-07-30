@@ -58,6 +58,18 @@ export const kylinEndpoints = [
   },
 ]
 
+export const jungle3Endpoints = [
+  {
+    url: 'https://jungle3.cryptolions.io',
+  },
+  {
+    url: 'https://jungle.eosphere.io',
+  },
+  {
+    url: 'https://api-jungle.eosarabia.net',
+  },
+]
+
 export const eosMainEndpoints = [
   {
     url: 'https://api.eosn.io:443',
@@ -247,11 +259,14 @@ async function run() {
   const kylin = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, kylinEndpoints, chainSettings)
   await kylin.connect()
 
-  const eosMain = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, eosMainEndpoints, chainSettings)
-  await eosMain.connect()
+  // const jungle = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, jungle3Endpoints, chainSettings)
+  // await jungle.connect()
 
-  const oreStaging = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, oreStagingEndpoints, chainSettings)
-  await oreStaging.connect()
+  // const eosMain = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, eosMainEndpoints, chainSettings)
+  // await eosMain.connect()
+
+  // const oreStaging = PluginChainFactory([ChainEosV2], Models.ChainType.EosV2, oreStagingEndpoints, chainSettings)
+  // await oreStaging.connect()
 
   // -------------------- Create Account -----------------------
 
@@ -272,14 +287,12 @@ async function run() {
 
   // -----> CreateAccount - create native kylin account
   const createAccount = await kylin.new.CreateAccount(createAccountOptions_EosNative)
-  createAccount.generateKeysIfNeeded()
-  if (createAccount.supportsTransactionToCreateAccount) {
-    await createAccount.composeTransaction(EosNewAccountType.Native)
-    await prepTransaction(kylin, createAccount.transaction, env.KYLIN_proppropprop_PRIVATE_KEY)
-    console.log('createAccount.generatedKeys: ', createAccount.generatedKeys.accountKeys)
-    const txResponse = await createAccount.transaction.send()
-    console.log('createAccount response: ', JSON.stringify(txResponse))
-  }
+  await createAccount.generateKeysIfNeeded()
+  await createAccount.composeTransaction(EosNewAccountType.Native)
+  await prepTransaction(kylin, createAccount.transaction, env.KYLIN_proppropprop_PRIVATE_KEY)
+  console.log('createAccount.generatedKeys: ', createAccount?.generatedKeys?.accountKeys)
+  const txResponse = await createAccount.transaction.send()
+  console.log('createAccount response: ', JSON.stringify(txResponse))
 
   // -----> CreateAccount - create native ore-staging account
   // const createAccount = await oreStaging.new.CreateAccount(createAccountOptions_OreNative)
