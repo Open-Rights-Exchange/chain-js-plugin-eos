@@ -262,7 +262,7 @@ export class EosTransaction implements Interfaces.Transaction {
   }
 
   /** Throws if transction doesnt have a raw value */
-  public async assertHasRaw(): Promise<void> {
+  public assertHasRaw() {
     if (!this.hasRaw) {
       Errors.throwNewError(
         'Transaction has not been prepared to be signed yet. Call prepareToBeSigned() or use setTransaction(). Use transaction.hasRaw to check before using transaction.raw',
@@ -665,11 +665,11 @@ export class EosTransaction implements Interfaces.Transaction {
   }
 
   public async setDesiredFee(): Promise<any> {
-    Helpers.notSupported('setDesiredFee')
+    Helpers.notSupported('EOS does not require transaction fees')
   }
 
   public async getSuggestedFee(): Promise<any> {
-    Helpers.notSupported('getSuggestedFee')
+    Helpers.notSupported('EOS does not require transaction fees - see resourcesRequired()')
   }
 
   private setActualCost() {
