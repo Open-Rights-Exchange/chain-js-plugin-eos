@@ -78,7 +78,7 @@
     "prettier": "^2.6.2"
   },
   "peerDependencies": {
-    "@open-rights-exchange/chain-js": "^4.9.0"
+    "@open-rights-exchange/chain-js": "^4.9.1"
   },
   "files": [
     "dist",
