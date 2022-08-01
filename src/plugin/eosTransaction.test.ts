@@ -1,10 +1,9 @@
-import { getChain } from "../tests/helpers"
-import { ChainNetwork } from "../tests/mockups/chainConfig"
-import { account1, account2, actionRawTransactionExpired1, actionSendTokenEos, actionTokenTransferStandard } from "../tests/mockups/eosTransactions"
+import { getChain } from '../tests/helpers'
+import { ChainNetwork } from '../tests/mockups/chainConfig'
+import { account1, account2, actionRawTransactionExpired1, actionSendTokenEos } from '../tests/mockups/eosTransactions'
 import { Chain, Models, Transaction } from '@open-rights-exchange/chain-js'
 
 describe('Transaction properties', () => {
-
   let chain: Chain
   let tx: Transaction
   let action: any
@@ -41,11 +40,4 @@ describe('Transaction properties', () => {
     await expect(tx.setDesiredFee(null)).rejects.toThrow('Not Supported')
     expect(true).toEqual(true)
   })
-  
-  test('calling fees functions throws `not supported`', async () => {
-    await expect(tx.getSuggestedFee(Models.TxExecutionPriority.Fast)).rejects.toThrow('Not Supported')
-    await expect(tx.setDesiredFee(null)).rejects.toThrow('Not Supported')
-    expect(true).toEqual(true)
-  })
-
 })
