@@ -1,8 +1,6 @@
 import { chainConfig } from './chainConfig'
 
-export const account1 = chainConfig.eos_jungle.account1
-export const permission1 = chainConfig.eos_jungle.permission1
-export const account2 = chainConfig.eos_jungle.account2
+export const { account1, permission1, account2 } = chainConfig.eos_jungle
 export const unusedAccountPublicKey = 'EOS5vf6mmk2oU6ae1PXTtnZD7ucKasA3rUEzXyi5xR7WkzX8emEma'
 
 export const actionRawTransactionExpired1 = JSON.parse(
