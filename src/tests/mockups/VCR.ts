@@ -2,31 +2,32 @@ import nock from 'nock'
 import { promises as fs } from 'fs'
 
 type CassetteFile = Record<string, nock.Definition[]>
+type DefinitionProcessor = (defns: nock.Definition[]) => nock.Definition[]
 
-export async function startVCR(): Promise<void> {
+export async function startVCR(processDefns: DefinitionProcessor = defns => defns): Promise<void> {
   const defns = await currentCassettes()
   if (!defns) {
+    if (process.env.CI) {
+      throw new Error(`No cassettes found. They must be in place before running tests on CI ${cassettePath()}`)
+    }
     // No cassettes found - recording responses
     nock.recorder.rec({ output_objects: true, dont_print: true })
   } else {
     // Cassettes found - using saved responses
     // set up the mocks
-    nock.define(defns)
+    nock.define(processDefns(defns))
+    if (!nock.isActive()) nock.activate()
   }
 }
 
 export async function stopVCR() {
   const defns = nock.recorder.play() as nock.Definition[]
+  nock.recorder.clear()
   if (defns.length) {
     await saveCassettes(defns)
   }
   nock.restore()
-}
-
-function timeString(...args: Parameters<typeof Date>) {
-  const date = new Date(...args)
-  // the dates returned by this api appear to be iso string formatted but without the Z
-  return date.toISOString().replace(/Z$/, '')
+  nock.cleanAll()
 }
 
 function cassettePath(): string {
@@ -40,6 +41,9 @@ function cassettePath(): string {
 
 async function writeCassetteFile(cassettes: CassetteFile): Promise<void> {
   console.log('updating cassette file')
+  const cassPath = cassettePath()
+  const cassDir = cassPath.replace(/\/[^/]*$/, '')
+  await fs.mkdir(cassDir, { recursive: true })
   await fs.writeFile(cassettePath(), JSON.stringify(cassettes, null, 2))
 }
 

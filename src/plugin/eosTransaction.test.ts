@@ -6,15 +6,17 @@ import { startVCR, stopVCR } from '../tests/mockups/VCR'
 import keys from '../tests/mockups/keys'
 import nock from 'nock'
 
+jest.setTimeout(100000)
+nock.disableNetConnect()
+
 describe('Transaction properties', () => {
   let chain: Chain
   let tx: Transaction
   let action: any
 
   beforeEach(async () => {
-    nock.disableNetConnect()
     await startVCR()
-    chain = await getChain(ChainNetwork.EosJungle, true)
+    chain = await getChain(ChainNetwork.EosKylin, true)
     tx = await chain.new.Transaction({})
     action = actionSendTokenEos(account1, account2)
     await tx.setTransaction([action])
@@ -32,8 +34,9 @@ describe('Transaction properties', () => {
     await tx.prepareToBeSigned()
     expect(await tx.expiresOn()).toBeInstanceOf(Date)
     expect(await tx.isExpired()).toBeFalsy()
+
     await tx.validate()
-    await tx.sign([keys.eos_jungle_privateKey])
+    await tx.sign([keys.eos_kylin_privateKey])
     await tx.send()
   })
 

@@ -18,6 +18,7 @@ import {
   EosAuthorizationPerm,
   PermissionMapCache,
   EosTransactionResources,
+  EosTxResult,
 } from './models'
 
 export class EosTransaction implements Interfaces.Transaction {
@@ -38,7 +39,7 @@ export class EosTransaction implements Interfaces.Transaction {
   /** Transaction prepared for signing (raw transaction) */
   private _raw: EosRawTransaction
 
-  private _sendReceipt: any
+  private _sendReceipt: EosTxResult
 
   private _signBuffer: Buffer
 
@@ -447,9 +448,8 @@ export class EosTransaction implements Interfaces.Transaction {
     })
   }
 
-  private async setTransactionId(sendReceipt: Promise<any>) {
-    const result = await sendReceipt
-    this._transactionId = result?.transactionId
+  private async setTransactionId(sendReceipt: EosTxResult) {
+    this._transactionId = sendReceipt.transactionId
   }
 
   public get transactionId(): string {
@@ -599,6 +599,12 @@ export class EosTransaction implements Interfaces.Transaction {
     this.assertIsValidated()
     this.assertHasAllRequiredSignature()
     const signedTransaction = { serializedTransaction: this._raw, signatures: this.signatures }
+
+    // where can we find the shape of this._sendReceipt.chainRespone?
+    // is this an EOS chain response? or a chain-js chain response
+    // are these the docs? https://developers.eos.io/manuals/eos/latest/nodeos/plugins/chain_api_plugin/api-reference/index#operation/send_transaction
+    // those would indicate the reponse is empty or null
+    // it looks like we're expecting https://developers.eos.io/manuals/eosjs/latest/API-Reference/interfaces/_eosjs_api_interfaces_.transactiontrace
     this._sendReceipt = await this._chainState.sendTransaction(signedTransaction, waitForConfirm, communicationSettings)
     this.setTransactionId(this._sendReceipt)
     this.setActualCost()
@@ -673,6 +679,8 @@ export class EosTransaction implements Interfaces.Transaction {
   }
 
   private setActualCost() {
+    // where are the docs / source code that informs us of the contents of chainResponse?
+    // could we strongly type this data?
     const { chainResponse } = this._sendReceipt
     const { action_traces: actionTraces, receipt, net_usage: netUsage } = chainResponse.processed
     const cpuUsage = receipt?.cpu_usage_us
