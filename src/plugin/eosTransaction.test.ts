@@ -55,12 +55,7 @@ describe('Transaction actions handling', () => {
     ;({ data, ...actionWithoutData } = action)
   })
 
-  test('ExpiresOn throws before Tx prepareToBeSigned()', async () => {
-    /** throws before prepared */
-    await expect(tx.expiresOn()).rejects.toThrow('Transaction has not been prepared')
-  })
-
-  test('transaction action setting works as expected', () => {
+  test('transaction.actions =... works as expected', () => {
     expect(() => (tx.actions = [action])).not.toThrow()
     expect(() => (tx.actions = [action, action])).not.toThrow()
     // throws for bad values
@@ -76,12 +71,10 @@ describe('Transaction actions handling', () => {
     expect(() => tx.addAction([actionWithoutData])).toThrow('Transaction action not well-formed')
   })
 
-  test('setTransction works as expected', async () => {
+  test('setTransction() works as expected', async () => {
     expect(() => tx.setTransaction([action, action])).not.toThrow()
     // throws for bad values
     await expect(() => tx.setTransaction([])).rejects.toThrow('actions must be an array and have at least one value')
-    await expect(tx.setTransaction('abc')).rejects.toThrow(
-      'Failed trying to set transaction. Value must be either: array of actions OR serialized transaction object. Error: Odd number of hex digits',
-    )
+    await expect(tx.setTransaction('abc')).rejects.toThrow('Failed trying to set transaction. Value must be either:')
   })
 })
