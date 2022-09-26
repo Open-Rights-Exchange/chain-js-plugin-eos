@@ -3,7 +3,7 @@ import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chain
 import { EosAccount } from './eosAccount'
 import { EosChainState } from './eosChainState'
 import { getPublicKeyFromSignature, sign as cryptoSign } from './eosCrypto'
-import { isValidEosSignature, isValidEosPrivateKey, toEosSignature } from './helpers'
+import { EOS_IO_CODE, isValidEosPrivateKey, isValidEosSignature, toEosSignature } from './helpers'
 import {
   EosAuthorization,
   EosActionStruct,
@@ -42,7 +42,7 @@ export class EosTransaction implements Interfaces.Transaction {
 
   private _signBuffer: Buffer
 
-  private _requiredAuthorizations: EosAuthorizationPerm[]
+  private _requiredAuthorizationsWithSubAuths: EosAuthorizationPerm[]
 
   private _isValidated: boolean
 
@@ -251,7 +251,7 @@ export class EosTransaction implements Interfaces.Transaction {
   public async validate(): Promise<void> {
     this.assertHasRaw()
     // this will throw an error if an account in transaction body doesn't exist on chain
-    this._requiredAuthorizations = await this.fetchAuthorizationsRequired()
+    await this.fetchAuthorizationsRequired() // updates this._authorizationsRequired
     await this.assertTransactionNotExpired()
     this._isValidated = true
   }
@@ -347,7 +347,11 @@ export class EosTransaction implements Interfaces.Transaction {
     return !Helpers.isNullOrEmpty(this.signatures)
   }
 
-  private checkAuthSigned(auth: EosRequiredAuthorization): boolean {
+  /** has enough signatures to satisfy an auth
+   *  that is, has enough signatures to meet auth.threshold weight
+   *  checks nested subAuths needed for msig
+   */
+  private hasSufficientSignaturesForAuth(auth: EosRequiredAuthorization): boolean {
     const weights: number[] = []
     auth?.keys?.forEach(keyObj => weights.push(this.hasSignatureForPublicKey(keyObj.key) ? keyObj.weight : 0))
     const authAccountsToCheck = auth?.accounts?.filter(
@@ -370,10 +374,7 @@ export class EosTransaction implements Interfaces.Transaction {
   /** Whether there is an attached signature for every authorization (e.g. account/permission) in all actions */
   public get hasAllRequiredSignatures(): boolean {
     this.assertIsValidated()
-    const hasAllSignatures = this._requiredAuthorizations?.every(auth =>
-      this.checkAuthSigned(auth?.requiredAuthorization),
-    )
-    return hasAllSignatures
+    return !this.missingSignatures
   }
 
   /** Throws if transaction is missing any signatures */
@@ -387,7 +388,9 @@ export class EosTransaction implements Interfaces.Transaction {
    *  Retuns null if no signatures are missing */
   public get missingSignatures(): EosAuthorizationPerm[] {
     this.assertIsValidated()
-    const missing = this._requiredAuthorizations?.filter(auth => !this.checkAuthSigned(auth?.requiredAuthorization))
+    const missing = this._requiredAuthorizationsWithSubAuths?.filter(
+      auth => !this.hasSufficientSignaturesForAuth(auth?.requiredAuthorization),
+    )
     return Helpers.isNullOrEmpty(missing) ? null : missing // if no values, return null instead of empty array
   }
 
@@ -424,11 +427,7 @@ export class EosTransaction implements Interfaces.Transaction {
   }
 
   public get isMultisig(): boolean {
-    let requiresMoreSigs = false
-    this._requiredAuthorizations?.forEach(auth => {
-      if (auth.requiredAuthorization.keys.length > 1) requiresMoreSigs = true
-    })
-    return requiresMoreSigs
+    return this._requiredAuthorizationsWithSubAuths?.some(auth => auth.requiredAuthorization.keys.length > 1)
   }
 
   /** Sign the transaction body with private key(s) and add to attached signatures */
@@ -464,62 +463,56 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** An array of the unique set of account/permission/publicKey for all actions in transaction
    *  Also fetches the related accounts from the chain (to get public keys)
+   *  Also includes nested subAuths for an auth (used for multisig) - keys array is empty at the top-level but present in subauth
    *  NOTE: EOS requires async fecting, thus this getter requires validate() to be called
    *        call fetchAuthorizationsRequired() if needed before validate() */
   get requiredAuthorizations() {
     this.assertIsValidated()
-    return this._requiredAuthorizations
+    return this._requiredAuthorizationsWithSubAuths
   }
 
   /** Collect unique set of account/permission for all actions in transaction
    * Retrieves public keys from the chain by retrieving account(s) when needed */
-  public async fetchAuthorizationsRequired(): Promise<EosAuthorizationPerm[]> {
-    const requiredAuths = new Set<EosAuthorizationPerm>()
-    const actions = this._actions
-    if (actions) {
-      actions
-        .map(action => action.authorization)
-        .forEach(auths => {
-          auths.forEach(auth => {
-            const { actor: account, permission } = auth
-            if (permission !== Helpers.toChainEntityName('eosio.code')) {
-              requiredAuths.add({ account, permission })
-            }
+  public async fetchAuthorizationsRequired() {
+    const requiredAuthsSet = new Set<EosAuthorizationPerm>()
+    // collect all unique account/permission
+    this._actions
+      ?.map(action => action.authorization)
+      .forEach(auths => {
+        auths
+          .filter(auth => auth.permission !== EOS_IO_CODE)
+          .forEach(auth => {
+            requiredAuthsSet.add({ account: auth.actor, permission: auth.permission })
           })
-        })
-    }
-    // get the unique set of account/permissions
-    const requiredAuthsArray = Helpers.getUniqueValues<EosAuthorizationPerm>(Array.from(requiredAuths))
+      })
+
+    const requiredAuthsUniqueArray = Helpers.getUniqueValues<EosAuthorizationPerm>(Array.from(requiredAuthsSet))
     // attach public keys for each account/permission - fetches accounts from chain where necessary
-    const uniqueRequiredAuths = await this.addAuthToPermissions(requiredAuthsArray)
+    const uniqueRequiredAuths = await this.addAuthToPermissions(requiredAuthsUniqueArray)
     // Attach subAuth for each accountName/permission specified as Authorization.
     const uniqueRequiredAuthsWithSubAuthPromises = uniqueRequiredAuths?.map(async uAuth => {
-      const { accounts } = uAuth?.requiredAuthorization || {}
-      const accountsToGetSubAuths = accounts?.filter(
-        account => account.permission.permission !== Helpers.toChainEntityName('eosio.code'),
+      const accountsToGetSubAuths = uAuth?.requiredAuthorization?.accounts?.filter(
+        account => account.permission.permission !== EOS_IO_CODE,
       )
-      if (accountsToGetSubAuths?.length > 0) {
-        const accountsWithAuthPromises = accountsToGetSubAuths.map(async accObj => {
-          const { permission } = accObj
-          const { actor, permission: permissionName } = permission
-          const permToGetAuth: EosAuthorizationPerm = {
-            account: actor,
-            permission: permissionName,
-          }
-          const [subAuthPerm] = await this.addAuthToPermissions([permToGetAuth])
-          const { requiredAuthorization: subRequiredAuth } = subAuthPerm
-          if (!Helpers.isNullOrEmpty(subRequiredAuth?.accounts)) {
-            Errors.throwNewError('ChainJs doesnt support nested accounts permission')
-          }
-          return { ...accObj, subAuth: subRequiredAuth }
-        })
-        const accountsWithAuth = await Promise.all(accountsWithAuthPromises)
-        return { ...uAuth, requiredAuthorization: { ...uAuth.requiredAuthorization, accounts: accountsWithAuth } }
-      }
-      return uAuth
+      if (Helpers.isNullOrEmpty(accountsToGetSubAuths)) return uAuth
+      // if any authorization is itself an account, dig into it and get its auths (this is used for msig transactions)
+      const accountsWithAuthPromises = accountsToGetSubAuths.map(async accObj => {
+        const { permission } = accObj
+        const [permWithSubAuth] = await this.addAuthToPermissions([
+          { account: permission.actor, permission: permission.permission },
+        ])
+        const { requiredAuthorization: subRequiredAuth } = permWithSubAuth
+        if (!Helpers.isNullOrEmpty(subRequiredAuth?.accounts)) {
+          Errors.throwNewError('ChainJs doesnt support nested accounts permission')
+        }
+        return { ...accObj, subAuth: subRequiredAuth }
+      })
+      const accountsWithAuth = await Promise.all(accountsWithAuthPromises)
+      return { ...uAuth, requiredAuthorization: { ...uAuth.requiredAuthorization, accounts: accountsWithAuth } }
     })
+
     const uniqueRequiredAuthsWithSubAuth = await Promise.all(uniqueRequiredAuthsWithSubAuthPromises)
-    return uniqueRequiredAuthsWithSubAuth
+    this._requiredAuthorizationsWithSubAuths = uniqueRequiredAuthsWithSubAuth
   }
 
   // TODO: This code only works if the firstPublicKey is the only required Key
