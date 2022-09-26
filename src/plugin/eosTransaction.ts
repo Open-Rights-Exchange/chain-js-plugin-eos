@@ -243,7 +243,7 @@ export class EosTransaction implements Interfaces.Transaction {
   public async validate(): Promise<void> {
     this.assertHasRaw()
     // this will throw an error if an account in transaction body doesn't exist on chain
-    await this.fetchAuthorizationsRequired() // updates this._authorizationsRequired
+    this._requiredAuthorizations = await this.fetchAuthorizationsRequired()
     await this.assertTransactionNotExpired()
     this._isValidated = true
   }
