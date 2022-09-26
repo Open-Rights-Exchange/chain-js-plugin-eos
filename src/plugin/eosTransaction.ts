@@ -149,15 +149,15 @@ export class EosTransaction implements Interfaces.Transaction {
 
   /** Accepts either a raw transaction or an array of actions
    */
-  public async setTransaction(transaction: EosActionStruct[] | EosSerializedTransaction) {
+  public async setTransaction(transactionOrActions: EosActionStruct[] | EosSerializedTransaction) {
     this.assertNoSignatures()
-    if (this.isEosActionStructArray(transaction)) {
-      this.actions = transaction as EosActionStruct[]
+    if (Array.isArray(transactionOrActions)) {
+      this.actions = transactionOrActions as EosActionStruct[]
       return
     }
     // if not actions array, assume value is a raw transaction
     try {
-      await this.setFromRaw(transaction as EosSerializedTransaction)
+      await this.setFromRaw(transactionOrActions as EosSerializedTransaction)
     } catch (error) {
       Errors.throwNewError(
         `Failed trying to set transaction. Value must be either: array of actions OR serialized transaction object. Error: ${error.message}`,
@@ -213,9 +213,10 @@ export class EosTransaction implements Interfaces.Transaction {
   /** Sets the Array of actions */
   public set actions(actions: EosActionStruct[]) {
     this.assertNoSignatures()
-    if (!this.isEosActionStructArray(actions)) {
+    if (!Array.isArray(actions) || actions?.length === 0) {
       Errors.throwNewError('actions must be an array and have at least one value')
     }
+    actions.map(action => this.assertActionWellFormed(action)) // check all actions are well-formed
     this._actions = actions
     this._isValidated = false
   }
@@ -224,9 +225,7 @@ export class EosTransaction implements Interfaces.Transaction {
    *  Setting asFirstAction = true places the new transaction at the top */
   public addAction(action: EosActionStruct, asFirstAction: boolean = false): void {
     this.assertNoSignatures()
-    if (!action) {
-      Errors.throwNewError('Action parameter is missing')
-    }
+    this.assertActionWellFormed(action)
     let newActions = this._actions ?? []
     if (asFirstAction) {
       newActions = [action, ...(this._actions || [])]
@@ -237,13 +236,6 @@ export class EosTransaction implements Interfaces.Transaction {
     this._isValidated = false
   }
 
-  /** Wether a value is a well-formed array of tx actions */
-  isEosActionStructArray(value: any) {
-    if (Helpers.isNullOrEmpty(value) || !Array.isArray(value)) return false
-    if (!(value[0] as EosActionStruct)?.account) return false
-    return true
-  }
-
   // validation
 
   /** Verifies that all accounts and permisison for actions exist on chain.
@@ -251,7 +243,7 @@ export class EosTransaction implements Interfaces.Transaction {
   public async validate(): Promise<void> {
     this.assertHasRaw()
     // this will throw an error if an account in transaction body doesn't exist on chain
-    this._requiredAuthorizations = await this.fetchAuthorizationsRequired()
+    await this.fetchAuthorizationsRequired() // updates this._authorizationsRequired
     await this.assertTransactionNotExpired()
     this._isValidated = true
   }
@@ -303,6 +295,24 @@ export class EosTransaction implements Interfaces.Transaction {
     this.assertHasRaw()
     const { expiration } = await this._chainState.api.deserializeTransactionWithActions(this.raw)
     return new Date(`${expiration}Z`) // Add Z to specify GMT time
+  }
+
+  /** Throw if action is missing basic action fields */
+  public assertActionWellFormed(action: EosActionStruct) {
+    if (!action) Errors.throwNewError('action is missing')
+    if (
+      !(
+        action?.account &&
+        action?.name &&
+        action?.data &&
+        action?.authorization &&
+        action?.authorization?.every(auth => auth?.actor && auth?.permission)
+      )
+    ) {
+      Errors.throwNewError(
+        'Transaction action not well-formed. Expecting: { account, name, authorization: { actor, permission }, data : {...} } .',
+      )
+    }
   }
 
   // signatures
