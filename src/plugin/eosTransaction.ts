@@ -3,7 +3,7 @@ import { Helpers, Models, Interfaces, Errors } from '@open-rights-exchange/chain
 import { EosAccount } from './eosAccount'
 import { EosChainState } from './eosChainState'
 import { getPublicKeyFromSignature, sign as cryptoSign } from './eosCrypto'
-import { isValidEosSignature, isValidEosPrivateKey, toEosSignature } from './helpers'
+import { isValidEosSignature, isValidEosPrivateKey, toEosSignature, isArrayAndNotEmpty } from './helpers'
 import {
   EosAuthorization,
   EosActionStruct,
@@ -213,7 +213,7 @@ export class EosTransaction implements Interfaces.Transaction {
   /** Sets the Array of actions */
   public set actions(actions: EosActionStruct[]) {
     this.assertNoSignatures()
-    if (!Array.isArray(actions) || actions?.length === 0) {
+    if (!isArrayAndNotEmpty(actions)) {
       Errors.throwNewError('actions must be an array and have at least one value')
     }
     actions.map(action => this.assertActionWellFormed(action)) // check all actions are well-formed
@@ -306,6 +306,7 @@ export class EosTransaction implements Interfaces.Transaction {
         action?.name &&
         action?.data &&
         action?.authorization &&
+        isArrayAndNotEmpty(action?.authorization) &&
         action?.authorization?.every(auth => auth?.actor && auth?.permission)
       )
     ) {

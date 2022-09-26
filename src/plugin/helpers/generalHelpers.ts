@@ -74,3 +74,7 @@ export function msigOptionToAuth(msigOption: MsigAuthOptions): EosAuthorizationS
     waits: Array<any>(),
   }
 }
+
+export function isArrayAndNotEmpty(value: any): boolean {
+  return Array.isArray(value) && value.length > 0
+}
