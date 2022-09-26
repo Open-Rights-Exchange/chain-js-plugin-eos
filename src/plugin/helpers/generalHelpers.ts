@@ -6,6 +6,8 @@ import { isValidEosPublicKey } from './cryptoModelHelpers'
 
 const EOS_BASE = 31 // Base 31 allows us to leave out '.', as it's used for account scope
 
+export const EOS_IO_CODE = Helpers.toChainEntityName('eosio.code')
+
 /** Returns a UNIX timestamp, that is EOS base32 encoded  */
 
 /**  Returns valid EOS base32, which is different than the standard JS base32 implementation */
