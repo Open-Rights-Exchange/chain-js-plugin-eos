@@ -2,7 +2,7 @@ import { getChain } from '../tests/helpers'
 import { ChainNetwork } from '../tests/mockups/chainConfig'
 import { account1, account2, actionRawTransactionExpired1, actionSendTokenEos } from '../tests/mockups/eosTransactions'
 import { Chain, Models, Transaction } from '@open-rights-exchange/chain-js'
-import { startVCR, stopVCR } from '../tests/mockups/VCR'
+import { startVCR, stopVCR } from '@aikon/network-vcr'
 import keys from '../tests/mockups/keys'
 import nock from 'nock'
 
