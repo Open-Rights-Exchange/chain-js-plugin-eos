@@ -2,6 +2,12 @@ import { getChain } from '../tests/helpers'
 import { ChainNetwork } from '../tests/mockups/chainConfig'
 import { account1, account2, actionRawTransactionExpired1, actionSendTokenEos } from '../tests/mockups/eosTransactions'
 import { Chain, Models, Transaction } from '@open-rights-exchange/chain-js'
+import { startVCR, stopVCR } from '@aikon/network-vcr'
+import keys from '../tests/mockups/keys'
+import nock from 'nock'
+
+jest.setTimeout(100000)
+nock.disableNetConnect()
 
 describe('Transaction properties', () => {
   let chain: Chain
@@ -9,11 +15,14 @@ describe('Transaction properties', () => {
   let action: any
 
   beforeEach(async () => {
-    chain = await getChain(ChainNetwork.EosJungle, true)
+    await startVCR()
+    chain = await getChain(ChainNetwork.EosKylin, true)
     tx = await chain.new.Transaction({})
-    // const action = await chain.composeAction(Models.ChainActionType.TokenTransfer, actionTokenTransferStandard(account1, account2))
     action = actionSendTokenEos(account1, account2)
     await tx.setTransaction([action])
+  })
+  afterEach(async () => {
+    await stopVCR()
   })
 
   test('ExpiresOn throws before Tx prepareToBeSigned()', async () => {
@@ -25,6 +34,10 @@ describe('Transaction properties', () => {
     await tx.prepareToBeSigned()
     expect(await tx.expiresOn()).toBeInstanceOf(Date)
     expect(await tx.isExpired()).toBeFalsy()
+
+    await tx.validate()
+    await tx.sign([keys.eos_kylin_privateKey])
+    await tx.send()
   })
 
   test('ExpiresOn and isExpired - expired transaction', async () => {
