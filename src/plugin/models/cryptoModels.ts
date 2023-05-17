@@ -30,3 +30,8 @@ export type EosAccountKeys = {
     active: Models.ModelsCryptoAes.AesEncryptedDataString
   }
 }
+
+/** An object containing the string message to sign */
+export type EosSignDataInput = {
+  stringToSign: string
+}
