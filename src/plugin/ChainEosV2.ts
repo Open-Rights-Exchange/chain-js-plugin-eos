@@ -322,8 +322,8 @@ class Plugin implements Chain {
   /** Whether the chain supports resources */
   supportsResources = true
 
-  /** Whether chain supports ability to get a publicKey from a signature */
-  supportsTypedDataSignature = false
+  /** Whether the chain's signMessage feature supports signing a typed data object (ex: ERC712 data type for Ethereum) */
+  supportsSignMessageTypedData = false
 
   /** Verify that a 'personal message' was signed using the given key (Eos does not append additional fields for a message) */
   verifySignedMessage = eoscrypto.verifySignedMessage

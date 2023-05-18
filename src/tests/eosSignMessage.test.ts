@@ -1,6 +1,7 @@
 import { Models, Crypto } from '@open-rights-exchange/chain-js'
 import { EosSignMessage } from '../plugin/eosSignMessage'
 import { toEosPrivateKey } from '../plugin/helpers'
+import { SignMethod } from '../plugin/models'
 
 const privateKey = toEosPrivateKey('5KADGFLxMNNB3PGWo6eUCTeSFoJMCBzMoJCxtaWH4oPYcgb2THR') // EOS6ksjkowURRzUyDVp7UK26A6Xv3jZdsifnR1rjaLaBAqrLXixqk
 
@@ -22,7 +23,7 @@ describe('Eos SignMessage Tests', () => {
       stringToSign: 'Something to sign here',
     }
 
-    const SignMessageOptions = { signMethod: 'eos-sign'}
+    const SignMessageOptions = { signMethod: SignMethod.Default }
     const SignMessage = new EosSignMessage(input, SignMessageOptions)
     const validateResult = await SignMessage.validate()
     expect(validateResult.valid).toBeTruthy()

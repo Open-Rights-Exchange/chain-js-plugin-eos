@@ -35,3 +35,8 @@ export type EosAccountKeys = {
 export type EosSignDataInput = {
   stringToSign: string
 }
+
+/** SignMethod enum contains the methods that can be used to sign a string */
+export enum SignMethod {
+  Default = 'default'
+}
