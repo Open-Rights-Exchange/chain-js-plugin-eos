@@ -205,7 +205,7 @@ class Plugin implements Chain {
     return transaction
   }
 
-  private newSignMessage = async (data: any, options?: any): Promise<EosSignMessage> => {
+  private newSignMessage = async (data: string, options?: any): Promise<EosSignMessage> => {
     // this.assertIsConnected()
     const transaction = new EosSignMessage(data, options)
     return transaction

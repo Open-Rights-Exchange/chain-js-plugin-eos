@@ -7,24 +7,10 @@ const privateKey = toEosPrivateKey('5KADGFLxMNNB3PGWo6eUCTeSFoJMCBzMoJCxtaWH4oPY
 
 
 describe('Eos SignMessage Tests', () => {
-
-  it('Eos sign - validate fails when input is incorrect', async () => {
-    const input2 = {
-      BADstringToSign: 'Something to sign here',
-    }
-
-    const SignMessage = new EosSignMessage(input2)
-    const validateResult = await SignMessage.validate()
-    expect(validateResult.valid).toBeFalsy()
-  })
-
   it('Eos sign - validate passes when input is correct', async () => {
-    const input = {
-      stringToSign: 'Something to sign here',
-    }
-
+    const stringToSign = 'Something to sign here'
     const SignMessageOptions = { signMethod: SignMethod.Default }
-    const SignMessage = new EosSignMessage(input, SignMessageOptions)
+    const SignMessage = new EosSignMessage(stringToSign, SignMessageOptions)
     const validateResult = await SignMessage.validate()
     expect(validateResult.valid).toBeTruthy()
 
@@ -35,10 +21,8 @@ describe('Eos SignMessage Tests', () => {
   })
 
   it('Eos validate - passes when input is correct and no options are provided', async () => {
-    const input = {
-      stringToSign: 'Something to sign here',
-    }
-    const SignMessage = new EosSignMessage(input)
+    const stringToSign = 'Something to sign here'
+    const SignMessage = new EosSignMessage(stringToSign)
     const validateResult = await SignMessage.validate()
     expect(validateResult.valid).toBeTruthy()
     const result = await SignMessage.sign([
