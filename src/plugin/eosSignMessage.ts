@@ -3,7 +3,7 @@ import { Interfaces, Models, Errors } from '@open-rights-exchange/chain-js'
 import {
   EosSignDataInput,
   EosPrivateKey,
-  SignMethod,
+  EosSignMethod,
 } from './models'
 import { sign } from "./eosCrypto"
 
@@ -24,7 +24,7 @@ export class EosSignMessage implements Interfaces.SignMessage {
   private _message: string
 
   private applyOptions(options: Models.SignMessageOptions) {
-    this._options = options ? options : { signMethod: SignMethod.Default}
+    this._options = options ? options : { signMethod: EosSignMethod.Default}
   }
 
   private applyMessage(message: string) {
@@ -61,7 +61,7 @@ export class EosSignMessage implements Interfaces.SignMessage {
   /** Verifies that the structure of the signature request is valid.
    *  Throws if any problems */
   public async validate(): Promise<Models.SignMessageValidateResult> {
-    if (this.signMethod !== SignMethod.Default) {
+    if (this.signMethod !== EosSignMethod.Default) {
       Errors.throwNewError(`signMethod not recognized. signMethod provided = ${this.signMethod}`)
     }
     const isValid = this.validateEosSignInput(this.messsage).valid

@@ -37,6 +37,6 @@ export type EosSignDataInput = {
 }
 
 /** SignMethod enum contains the methods that can be used to sign a string */
-export enum SignMethod {
+export enum EosSignMethod {
   Default = 'default'
 }
