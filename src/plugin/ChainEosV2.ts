@@ -67,6 +67,7 @@ import {
   EosSymbol,
   EosTransactionHistory,
 } from './models'
+import { EosSignMessage } from './eosSignMessage'
 // import { Asymmetric } from '../../crypto'
 // import { ChainJsPlugin, ChainJsPluginOptions } from '../../interfaces/plugin'
 
@@ -204,6 +205,12 @@ class Plugin implements Chain {
     return transaction
   }
 
+  private newSignMessage = async (data: string, options?: any): Promise<EosSignMessage> => {
+    // this.assertIsConnected()
+    const transaction = new EosSignMessage(data, options)
+    return transaction
+  }
+
   public new = {
     /** Returns a new chain Account object
      * If an account name is provided, it will be fetched from the chain and loaded into the returned account object
@@ -213,6 +220,8 @@ class Plugin implements Chain {
     CreateAccount: this.newCreateAccount.bind(this),
     /** Return a chain Transaction object used to compose and send transactions */
     Transaction: this.newTransaction.bind(this),
+    /** Return a Signed Message object */
+    SignMessage: this.newSignMessage.bind(this),
   }
 
   // --------- Transaction functions */
@@ -312,6 +321,9 @@ class Plugin implements Chain {
 
   /** Whether the chain supports resources */
   supportsResources = true
+
+  /** Whether the chain's signMessage feature supports signing a typed data object (ex: ERC712 data type for Ethereum) */
+  supportsSignMessageTypedData = false
 
   /** Verify that a 'personal message' was signed using the given key (Eos does not append additional fields for a message) */
   verifySignedMessage = eoscrypto.verifySignedMessage
