@@ -60,7 +60,7 @@ export const kylinEndpoints = [
 
 export const jungle3Endpoints = [
   {
-    url: 'https://jungle3.cryptolions.io',
+    url: 'https://jungle4.api.eosnation.io',
   },
   {
     url: 'https://jungle.eosphere.io',

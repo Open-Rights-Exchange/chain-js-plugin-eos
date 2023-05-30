@@ -29,7 +29,7 @@ export type IAllChainSettings = {
 export const chainConfig: IAllChainSettings = {
   eos_jungle: {
     chainType: Models.ChainType.EosV2,
-    endpoints: [{ url: 'https://jungle3.cryptolions.io:443' }],
+    endpoints: [{ url: 'https://jungle4.api.eosnation.io:443' }],
     account_MSIG: keys.eos_jungle_fromAccountName_MSIG,
     account1: keys.eos_jungle_fromAccountName,
     account2: keys.eos_jungle_toAccountName,
