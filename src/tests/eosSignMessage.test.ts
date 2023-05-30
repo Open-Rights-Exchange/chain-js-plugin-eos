@@ -5,7 +5,6 @@ import { EosSignMethod } from '../plugin/models'
 
 const privateKey = toEosPrivateKey('5KADGFLxMNNB3PGWo6eUCTeSFoJMCBzMoJCxtaWH4oPYcgb2THR') // EOS6ksjkowURRzUyDVp7UK26A6Xv3jZdsifnR1rjaLaBAqrLXixqk
 
-
 describe('Eos SignMessage Tests', () => {
   it('Eos sign - validate passes when input is correct', async () => {
     const stringToSign = 'Something to sign here'
@@ -14,9 +13,7 @@ describe('Eos SignMessage Tests', () => {
     const validateResult = await SignMessage.validate()
     expect(validateResult.valid).toBeTruthy()
 
-    const result = await SignMessage.sign([
-      privateKey as unknown as Models.PrivateKeyBrand,
-    ])
+    const result = await SignMessage.sign([privateKey as unknown as Models.PrivateKeyBrand])
     expect(result.signature).toBeDefined()
   })
 
@@ -25,9 +22,7 @@ describe('Eos SignMessage Tests', () => {
     const SignMessage = new EosSignMessage(stringToSign)
     const validateResult = await SignMessage.validate()
     expect(validateResult.valid).toBeTruthy()
-    const result = await SignMessage.sign([
-      privateKey as unknown as Models.PrivateKeyBrand,
-    ])
+    const result = await SignMessage.sign([privateKey as unknown as Models.PrivateKeyBrand])
     expect(result.signature).toBeDefined()
   })
 })

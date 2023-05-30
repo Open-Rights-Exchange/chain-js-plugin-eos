@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Interfaces, Models, Errors } from '@open-rights-exchange/chain-js'
-import {
-  EosSignDataInput,
-  EosPrivateKey,
-  EosSignMethod,
-} from './models'
-import { sign } from "./eosCrypto"
+import { EosSignDataInput, EosPrivateKey, EosSignMethod } from './models'
+import { sign } from './eosCrypto'
 
 export class EosSignMessage implements Interfaces.SignMessage {
-  constructor(message: string, options?: Models.SignMessageOptions ) {
+  constructor(message: string, options?: Models.SignMessageOptions) {
     this.applyOptions(options)
     this.setSignMethod()
     this.applyMessage(message)
@@ -24,7 +20,7 @@ export class EosSignMessage implements Interfaces.SignMessage {
   private _message: string
 
   private applyOptions(options: Models.SignMessageOptions) {
-    this._options = options ? options : { signMethod: EosSignMethod.Default}
+    this._options = options ? options : { signMethod: EosSignMethod.Default }
   }
 
   private applyMessage(message: string) {
@@ -39,7 +35,7 @@ export class EosSignMessage implements Interfaces.SignMessage {
   /** Message provided when the SignMessage class was created */
   get messsage(): EosSignDataInput {
     return {
-      stringToSign: this._message
+      stringToSign: this._message,
     }
   }
 
@@ -66,8 +62,8 @@ export class EosSignMessage implements Interfaces.SignMessage {
     }
     const isValid = this.validateEosSignInput(this.messsage).valid
     this._isValidated = isValid
-    return  {
-      valid: isValid
+    return {
+      valid: isValid,
     }
   }
 
@@ -80,30 +76,30 @@ export class EosSignMessage implements Interfaces.SignMessage {
 
   private validateEosSignInput(message: EosSignDataInput): Models.SignMessageValidateResult {
     let result: Models.SignMessageValidateResult
-  
+
     let errorMessage = ''
     let valid = true
-  
+
     // Check that the stringToSign property exists.
     if (!message || !message.stringToSign) {
       errorMessage += ' stringToSign property is missing.'
       valid = false
     }
-  
+
     // Check that message is string
     if (typeof message.stringToSign !== 'string') {
       errorMessage += ' stringToSign property must be a string.'
       valid = false
     }
-  
+
     /* If any part of the input is not valid then let's build an example to reply with */
     if (!valid) {
       const fullMessage = `The message supplied to personalSign is incorrectly formatted or missing: ${errorMessage}`
-  
+
       const example = {
         stringToSign: 'The message you would like to sign here',
       }
-  
+
       result = {
         valid,
         message: fullMessage,
@@ -116,10 +112,9 @@ export class EosSignMessage implements Interfaces.SignMessage {
         example: {},
       }
     }
-  
+
     return result
   }
-  
 
   /** Sign the string or structured data */
   public async sign(privateKeys: EosPrivateKey[]): Promise<Models.SignMessageResult> {
@@ -127,7 +122,7 @@ export class EosSignMessage implements Interfaces.SignMessage {
     let result: Models.SignMessageResult
     try {
       const privateKey = privateKeys[0]
-      const signature = sign (this.messsage.stringToSign, privateKey)
+      const signature = sign(this.messsage.stringToSign, privateKey)
       result = {
         signature,
       }
